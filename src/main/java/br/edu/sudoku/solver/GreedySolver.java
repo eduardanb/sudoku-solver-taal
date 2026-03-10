@@ -7,3 +7,17 @@
  * Embora seja mais rápido, essa abordagem não garante sempre
  * encontrar a solução ótima.
  */
+
+package br.edu.sudoku.solver;
+
+import br.edu.sudoku.metrics.Metrics;
+import br.edu.sudoku.model.SudokuBoard;
+
+public class GreedySolver implements SudokuSolver {
+
+    @Override
+    public boolean solve(SudokuBoard board, Metrics metrics) {
+        System.out.println("Greedy ainda não implementado.");
+        return false;
+    }
+}

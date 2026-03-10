@@ -10,3 +10,18 @@
  * - uso de memória
  * - número de podas no espaço de busca.
  */
+
+package br.edu.sudoku.metrics;
+
+public class Metrics {
+
+    private long visitedNodes = 0;
+
+    public void incrementVisitedNodes() {
+        visitedNodes++;
+    }
+
+    public long getVisitedNodes() {
+        return visitedNodes;
+    }
+}

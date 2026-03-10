@@ -7,3 +7,17 @@
  *
  * Isso reduz o número de estados explorados e melhora o desempenho.
  */
+
+package br.edu.sudoku.solver;
+
+import br.edu.sudoku.metrics.Metrics;
+import br.edu.sudoku.model.SudokuBoard;
+
+public class BranchAndBoundSolver implements SudokuSolver {
+
+    @Override
+    public boolean solve(SudokuBoard board, Metrics metrics) {
+        System.out.println("Branch And Bound Solver ainda não implementado.");
+        return false;
+    }
+}
