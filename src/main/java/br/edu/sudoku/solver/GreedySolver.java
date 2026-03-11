@@ -1,5 +1,5 @@
 /**
- * Implementação de uma estratégia gulosa para resolver o Sudoku.
+ * Implementação de uma estratégia gulosa para resolver o "Sudoku".
  *
  * O algoritmo seleciona localmente a melhor escolha em cada etapa,
  * tentando preencher células com valores que pareçam mais promissores.

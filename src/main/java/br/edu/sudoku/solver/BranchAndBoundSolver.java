@@ -1,5 +1,5 @@
 /**
- * Implementação da técnica Branch and Bound para resolver o Sudoku.
+ * Implementação da técnica Branch and Bound para resolver o "Sudoku".
  *
  * O algoritmo explora o espaço de busca de forma semelhante ao
  * Backtracking, porém aplica podas (bounds) para eliminar ramos

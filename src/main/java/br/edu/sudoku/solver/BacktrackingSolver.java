@@ -1,7 +1,7 @@
-/*
+/**
  * O tempo depende da ordem das casas vazias
    depende da ordem dos números testados (1–9)
- * Um Sudoku difícil pode acabar sendo resolvido antes
+ * Um "Sudoku" difícil pode acabar sendo resolvido antes
    de um médio dependendo do caminho que o algoritmo tenta.
  */
 
