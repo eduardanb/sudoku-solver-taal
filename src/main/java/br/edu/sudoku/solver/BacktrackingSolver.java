@@ -38,6 +38,7 @@ public class BacktrackingSolver implements SudokuSolver {
 
                             clearConsole();
 
+                            System.out.println("");
                             System.out.println("=== Sudoku Solver (Backtracking) ===");
                             System.out.println("Passo: " + steps);
                             System.out.println("Tentando colocar " + num + " em (" + row + "," + col + ")\n");

@@ -9,3 +9,14 @@
  * - número de nós visitados
  * - quantidade de podas realizadas.
  */
+
+package br.edu.sudoku.io;
+
+import br.edu.sudoku.model.SudokuBoard;
+
+public class SudokuWriter {
+
+    public static void printBoard(SudokuBoard board) {
+        board.printBoard();
+    }
+}

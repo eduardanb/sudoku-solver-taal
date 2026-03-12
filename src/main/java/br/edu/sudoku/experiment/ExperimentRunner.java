@@ -6,30 +6,32 @@
 package br.edu.sudoku.experiment;
 
 import br.edu.sudoku.io.SudokuReader;
+import br.edu.sudoku.io.SudokuWriter;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
-import br.edu.sudoku.solver.*;
+import br.edu.sudoku.solver.BacktrackingSolver;
+import br.edu.sudoku.solver.SudokuSolver;
 
 import java.util.Scanner;
 
 public class ExperimentRunner {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
 
             System.out.println("-------------------------------------------------------");
-            System.out.println("\n" +
-                    "███████╗██╗   ██╗██████╗  ██████╗ ██╗  ██╗██╗   ██╗\n" +
-                    "██╔════╝██║   ██║██╔══██╗██╔═══██╗██║ ██╔╝██║   ██║\n" +
-                    "███████╗██║   ██║██║  ██║██║   ██║█████╔╝ ██║   ██║\n" +
-                    "╚════██║██║   ██║██║  ██║██║   ██║██╔═██╗ ██║   ██║\n" +
-                    "███████║╚██████╔╝██████╔╝╚██████╔╝██║  ██╗╚██████╔╝\n" +
-                    "╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ \n" +
-                    "                     SOLVER");
+            System.out.println("███████╗██╗   ██╗██████╗  ██████╗ ██╗  ██╗██╗   ██╗");
+            System.out.println("██╔════╝██║   ██║██╔══██╗██╔═══██╗██║ ██╔╝██║   ██║");
+            System.out.println("███████╗██║   ██║██║  ██║██║   ██║█████╔╝ ██║   ██║");
+            System.out.println("╚════██║██║   ██║██║  ██║██║   ██║██╔═██╗ ██║   ██║");
+            System.out.println("███████║╚██████╔╝██████╔╝╚██████╔╝██║  ██╗╚██████╔╝");
+            System.out.println("╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ");
+            System.out.println("                     SOLVER");
             System.out.println("-------------------------------------------------------");
+
             System.out.println("1 - Backtracking");
             System.out.println("2 - Branch and Bound");
             System.out.println("3 - Greedy");
@@ -37,60 +39,102 @@ public class ExperimentRunner {
             System.out.println("0 - Sair");
 
             System.out.print("\nEscolha o algoritmo: ");
-            int option = scanner.nextInt();
+            int algoritmo = scanner.nextInt();
 
-            if (option == 0) {
+            if (algoritmo == 0) {
                 System.out.println("Encerrando...");
                 break;
             }
 
-            SudokuSolver solver = null;
+            System.out.println("-------------------------------------------------------");
+            System.out.println("\nEscolha a dificuldade:");
+            System.out.println("1 - Fácil");
+            System.out.println("2 - Médio");
+            System.out.println("3 - Difícil");
+            System.out.println("0 - Voltar");
 
-            switch (option) {
+            System.out.print("\nOpção: ");
+            int dificuldade = scanner.nextInt();
 
+            if (dificuldade == 0) {
+                continue;
+            }
+
+            String caminhoArquivo = "";
+
+            switch (dificuldade) {
                 case 1:
-                    solver = new BacktrackingSolver();
+                    caminhoArquivo = "sudokus/sudoku1.txt";
                     break;
-
                 case 2:
-                    solver = new BranchAndBoundSolver();
+                    caminhoArquivo = "sudokus/sudoku2.txt";
                     break;
-
                 case 3:
-                    solver = new GreedySolver();
+                    caminhoArquivo = "sudokus/sudoku3.txt";
                     break;
-
-                case 4:
-                    solver = new DynamicProgrammingSolver();
-                    break;
-
                 default:
-                    System.out.println("Opção inválida.");
+                    System.out.println("Dificuldade inválida.");
                     continue;
             }
 
-            SudokuBoard board = SudokuReader.read("sudokus/sudoku3.txt");
+            try {
 
-            System.out.println("\nSudoku inicial:\n");
-            board.printBoard();
+                SudokuBoard board = SudokuReader.read(caminhoArquivo);
 
-            Metrics metrics = new Metrics();
+                System.out.println("\nSudoku inicial:\n");
+                SudokuWriter.printBoard(board);
 
-            long start = System.currentTimeMillis();
+                SudokuSolver solver = null;
 
-            boolean solved = solver.solve(board, metrics);
+                switch (algoritmo) {
 
-            long end = System.currentTimeMillis();
+                    case 1:
+                        solver = new BacktrackingSolver();
+                        break;
 
-            if (solved) {
-                System.out.println("\nSudoku resolvido:\n");
-                board.printBoard();
-            } else {
-                System.out.println("\nNão foi possível resolver.");
+                    case 2:
+                        System.out.println("Branch and Bound ainda não implementado.");
+                        continue;
+
+                    case 3:
+                        System.out.println("Greedy ainda não implementado.");
+                        continue;
+
+                    case 4:
+                        System.out.println("Dynamic Programming ainda não implementado.");
+                        continue;
+
+                    default:
+                        System.out.println("Algoritmo inválido.");
+                        continue;
+                }
+
+                Metrics metrics = new Metrics();
+
+                long inicio = System.currentTimeMillis();
+
+                boolean resolvido = solver.solve(board, metrics);
+
+                long fim = System.currentTimeMillis();
+
+                if (resolvido) {
+
+                    System.out.println("\nSudoku resolvido:\n");
+                    SudokuWriter.printBoard(board);
+
+                    System.out.println("\nTempo de execução: " + (fim - inicio) + " ms");
+                    System.out.println("Nós visitados: " + metrics.getVisitedNodes());
+
+                } else {
+                    System.out.println("Não foi possível resolver o Sudoku.");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Erro ao carregar o arquivo.");
+                e.printStackTrace();
             }
 
-            System.out.println("\nTempo: " + (end - start) + " ms");
-            System.out.println("Nós visitados: " + metrics.getVisitedNodes());
+            System.out.println("\n");
         }
 
         scanner.close();
