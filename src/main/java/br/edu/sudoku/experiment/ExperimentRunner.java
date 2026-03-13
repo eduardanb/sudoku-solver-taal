@@ -53,7 +53,7 @@ public class ExperimentRunner {
             System.out.println("3 - Difícil");
             System.out.println("0 - Voltar");
 
-            System.out.print("\nOpção: ");
+            System.out.print("Opção: ");
             int dificuldade = scanner.nextInt();
 
             if (dificuldade == 0) {
@@ -61,17 +61,25 @@ public class ExperimentRunner {
             }
 
             String caminhoArquivo = "";
+            String nomeDificuldade = "";
 
             switch (dificuldade) {
+
                 case 1:
                     caminhoArquivo = "sudokus/sudoku1.txt";
+                    nomeDificuldade = "Fácil";
                     break;
+
                 case 2:
                     caminhoArquivo = "sudokus/sudoku2.txt";
+                    nomeDificuldade = "Médio";
                     break;
+
                 case 3:
                     caminhoArquivo = "sudokus/sudoku3.txt";
+                    nomeDificuldade = "Difícil";
                     break;
+
                 default:
                     System.out.println("Dificuldade inválida.");
                     continue;
@@ -80,6 +88,12 @@ public class ExperimentRunner {
             try {
 
                 SudokuBoard board = SudokuReader.read(caminhoArquivo);
+
+                System.out.println("\nAlgoritmo escolhido: " +
+                        "\n╔══════════════════════╗\n" +
+                        "      BACKTRACKING\n" +
+                        "╚══════════════════════╝");
+                System.out.println("Dificuldade: " + nomeDificuldade);
 
                 System.out.println("\nSudoku inicial:\n");
                 SudokuWriter.printBoard(board);
@@ -122,14 +136,21 @@ public class ExperimentRunner {
                     System.out.println("\nSudoku resolvido:\n");
                     SudokuWriter.printBoard(board);
 
+                    // GERA AUTOMATICAMENTE O ARQUIVO DE SAÍDA CORRETO
+                    String arquivoSaida = "src/main/resources/" + caminhoArquivo.replace(".txt", "_resolvido.txt");
+
+                    SudokuWriter.writeToFile(board, arquivoSaida);
+
                     System.out.println("\nTempo de execução: " + (fim - inicio) + " ms");
                     System.out.println("Nós visitados: " + metrics.getVisitedNodes());
 
                 } else {
+
                     System.out.println("Não foi possível resolver o Sudoku.");
                 }
 
             } catch (Exception e) {
+
                 System.out.println("Erro ao carregar o arquivo.");
                 e.printStackTrace();
             }
