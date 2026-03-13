@@ -10,6 +10,7 @@ import br.edu.sudoku.io.SudokuWriter;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.solver.BacktrackingSolver;
+import br.edu.sudoku.solver.BranchAndBoundSolver;
 import br.edu.sudoku.solver.SudokuSolver;
 
 import java.util.Scanner;
@@ -62,22 +63,26 @@ public class ExperimentRunner {
 
             String caminhoArquivo = "";
             String nomeDificuldade = "";
+            String nomeDificuldadeArquivo = "";
 
             switch (dificuldade) {
 
                 case 1:
-                    caminhoArquivo = "sudokus/sudoku1.txt";
+                    caminhoArquivo = "sudokus/sudoku_facil.txt";
                     nomeDificuldade = "Fácil";
+                    nomeDificuldadeArquivo = "facil";
                     break;
 
                 case 2:
-                    caminhoArquivo = "sudokus/sudoku2.txt";
+                    caminhoArquivo = "sudokus/sudoku_medio.txt";
                     nomeDificuldade = "Médio";
+                    nomeDificuldadeArquivo = "medio";
                     break;
 
                 case 3:
-                    caminhoArquivo = "sudokus/sudoku3.txt";
+                    caminhoArquivo = "sudokus/sudoku_dificil.txt";
                     nomeDificuldade = "Difícil";
+                    nomeDificuldadeArquivo = "dificil";
                     break;
 
                 default:
@@ -89,26 +94,30 @@ public class ExperimentRunner {
 
                 SudokuBoard board = SudokuReader.read(caminhoArquivo);
 
-                System.out.println("\nAlgoritmo escolhido: " +
-                        "\n╔══════════════════════╗\n" +
-                        "      BACKTRACKING\n" +
-                        "╚══════════════════════╝");
-                System.out.println("Dificuldade: " + nomeDificuldade);
-
-                System.out.println("\nSudoku inicial:\n");
-                SudokuWriter.printBoard(board);
-
                 SudokuSolver solver = null;
+                String nomeAlgoritmoArquivo = "";
 
                 switch (algoritmo) {
 
                     case 1:
                         solver = new BacktrackingSolver();
+                        nomeAlgoritmoArquivo = "backtracking";
+
+                        System.out.println("\nAlgoritmo escolhido: " +
+                                "\n╔══════════════════════╗\n" +
+                                "      BACKTRACKING\n" +
+                                "╚══════════════════════╝");
                         break;
 
                     case 2:
-                        System.out.println("Branch and Bound ainda não implementado.");
-                        continue;
+                        solver = new BranchAndBoundSolver();
+                        nomeAlgoritmoArquivo = "branchandbound";
+
+                        System.out.println("\nAlgoritmo escolhido: " +
+                                "\n╔══════════════════════════╗\n" +
+                                "       BRANCH AND BOUND\n" +
+                                "╚══════════════════════════╝");
+                        break;
 
                     case 3:
                         System.out.println("Greedy ainda não implementado.");
@@ -123,6 +132,11 @@ public class ExperimentRunner {
                         continue;
                 }
 
+                System.out.println("Dificuldade: " + nomeDificuldade);
+
+                System.out.println("\nSudoku inicial:\n");
+                SudokuWriter.printBoard(board);
+
                 Metrics metrics = new Metrics();
 
                 long inicio = System.currentTimeMillis();
@@ -136,8 +150,10 @@ public class ExperimentRunner {
                     System.out.println("\nSudoku resolvido:\n");
                     SudokuWriter.printBoard(board);
 
-                    // GERA AUTOMATICAMENTE O ARQUIVO DE SAÍDA CORRETO
-                    String arquivoSaida = "src/main/resources/" + caminhoArquivo.replace(".txt", "_resolvido.txt");
+                    String arquivoSaida =
+                            "src/main/resources/sudokus/sudoku_" +
+                                    nomeDificuldadeArquivo + "_" +
+                                    nomeAlgoritmoArquivo + ".txt";
 
                     SudokuWriter.writeToFile(board, arquivoSaida);
 
