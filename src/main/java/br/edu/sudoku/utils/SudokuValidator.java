@@ -17,6 +17,7 @@ public class SudokuValidator {
 
     public static boolean isValid(SudokuBoard board, int row, int col, int num) {
 
+        if (num < 1 || num > 9) return false;
         for (int i = 0; i < 9; i++) {
             if (board.get(row, i) == num) return false;
             if (board.get(i, col) == num) return false;
