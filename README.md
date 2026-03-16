@@ -6,80 +6,272 @@ Este projeto tem como objetivo implementar e comparar diferentes estratégias al
 
 As estratégias implementadas são:
 
-* Backtracking
-* Branch and Bound
-* Programação Dinâmica
-* Estratégia Gulosa
+- Backtracking
+- Branch and Bound
+- Programação Dinâmica
+- Estratégia Gulosa
 
 O sistema executa os algoritmos sobre instâncias de Sudoku fornecidas por arquivos de entrada e coleta métricas que permitem comparar formalmente o desempenho de cada abordagem.
-
----
 
 ## Objetivos
 
 O projeto busca:
 
-* Implementar diferentes técnicas de resolução para o Sudoku
-* Comparar as estratégias em termos de eficiência e qualidade da solução
-* Analisar o comportamento teórico e experimental dos algoritmos
-* Avaliar o impacto de heurísticas na redução do espaço de busca
+- Implementar diferentes técnicas de resolução para o Sudoku
+- Comparar as estratégias em termos de eficiência e qualidade da solução
+- Analisar o comportamento teórico e experimental dos algoritmos
+- Avaliar o impacto de heurísticas na redução do espaço de busca
 
----
+## Pré-requisitos
+
+Para executar este projeto, você precisa ter instalado:
+
+- Java Development Kit (JDK) 23 ou superior
+- Apache Maven 3.6 ou superior
+- Um editor de texto ou IDE como Visual Studio Code, IntelliJ IDEA ou Eclipse
+
+## Instalação
+
+1. Clone o repositório para sua máquina local:
+
+   ```
+   git clone https://github.com/seu-usuario/sudoku-solver-taal.git
+   ```
+
+2. Navegue até o diretório do projeto:
+
+   ```
+   cd sudoku-solver-taal
+   ```
+
+3. Compile o projeto usando Maven:
+
+   ```
+   mvn clean compile
+   ```
+
+## Uso
+
+### Executando os Solvers
+
+Para executar um dos solvers, você pode usar as classes principais ou o ExperimentRunner para comparações.
+
+#### Exemplo: Executando o Backtracking Solver
+
+```java
+import br.edu.sudoku.io.SudokuReader;
+import br.edu.sudoku.solver.BacktrackingSolver;
+import br.edu.sudoku.model.SudokuBoard;
+
+public class Main {
+    public static void main(String[] args) {
+        SudokuBoard board = SudokuReader.readFromFile("src/main/resources/sudokus/sudoku_facil.txt");
+        BacktrackingSolver solver = new BacktrackingSolver();
+        SudokuBoard solution = solver.solve(board);
+        if (solution != null) {
+            System.out.println("Sudoku resolvido!");
+            // Imprimir solução
+        } else {
+            System.out.println("Não foi possível resolver o Sudoku.");
+        }
+    }
+}
+```
+
+#### Usando o ExperimentRunner
+
+O ExperimentRunner permite executar todos os algoritmos sobre as mesmas instâncias e comparar os resultados:
+
+```java
+import br.edu.sudoku.experiment.ExperimentRunner;
+
+public class Main {
+    public static void main(String[] args) {
+        ExperimentRunner runner = new ExperimentRunner();
+        runner.runExperiments();
+    }
+}
+```
+
+### Arquivos de Entrada
+
+Os arquivos de Sudoku estão localizados em `src/main/resources/sudokus/`. Exemplos incluem:
+
+- `sudoku_facil.txt`: Instância fácil
+- `sudoku_medio.txt`: Instância média
+- `sudoku_dificil.txt`: Instância difícil
 
 ## Estrutura do Projeto
 
 O projeto segue a estrutura padrão de projetos Java com Maven.
 
 ```
-src
- ├── main
- │   ├── java
- │   │   └── br.edu.sudoku
- │   │       ├── experiment
- │   │       │   └── ExperimentRunner.java
- │   │       │
- │   │       ├── heuristics
- │   │       │   └── VariableOrderingHeuristic.java
- │   │       │
- │   │       ├── io
- │   │       │   ├── SudokuReader.java
- │   │       │   └── SudokuWriter.java
- │   │       │
- │   │       ├── metrics
- │   │       │   └── Metrics.java
- │   │       │
- │   │       ├── model
- │   │       │   └── SudokuBoard.java
- │   │       │
- │   │       ├── solver
- │   │       │   ├── SudokuSolver.java
- │   │       │   ├── BacktrackingSolver.java
- │   │       │   ├── BranchAndBoundSolver.java
- │   │       │   ├── DynamicProgrammingSolver.java
- │   │       │   └── GreedySolver.java
- │   │       │
- │   │       └── utils
- │   │           └── SudokuValidator.java
- │   │
- │   └── resources
- │       └── sudokus
- │           ├── sudoku1.txt
- │           └── sudoku2.txt
- │
- └── test
-     ├── java
-     │   └── br.edu.sudoku
-     │       ├── BacktrackingSolverTest.java
-     │       ├── BranchAndBoundSolverTest.java
-     │       ├── SolverComparisonTest.java
-     │       └── SudokuValidatorTest.java
-     │
-     └── resources
-         └── sudokus
-             └── testSudoku.txt
-```
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───br
+│   │   │       └───edu
+│   │   │           └───sudoku
+│   │   │               ├───experiment
+│   │   │               │       ExperimentRunner.java
+│   │   │               │
+│   │   │               ├───heuristics
+│   │   │               │       MRVHeuristic.java
+│   │   │               │       VariableOrderingHeuristic.java
+│   │   │               │
+│   │   │               ├───io
+│   │   │               │       SudokuReader.java
+│   │   │               │       SudokuWriter.java
+│   │   │               │
+│   │   │               ├───metrics
+│   │   │               │       Metrics.java
+│   │   │               │
+│   │   │               ├───model
+│   │   │               │       SudokuBoard.java
+│   │   │               │
+│   │   │               ├───solver
+│   │   │               │   │   SudokuSolver.java
+│   │   │               │   │
+│   │   │               │   ├───backtracking
+│   │   │               │   │       BacktrackingAlgorithm.java
+│   │   │               │   │       BacktrackingSolver.java
+│   │   │               │   │
+│   │   │               │   ├───branchandbound
+│   │   │               │   │       BranchAndBoundAlgorithm.java
+│   │   │               │   │       BranchAndBoundSolver.java
+│   │   │               │   │
+│   │   │               │   ├───dynamicprogramming
+│   │   │               │   │       DynamicProgrammingAlgorithm.java
+│   │   │               │   │       DynamicProgrammingSolver.java
+│   │   │               │   │
+│   │   │               │   └───greedy
+│   │   │               │           GreedyAlgorithm.java
+│   │   │               │           GreedySolver.java
+│   │   │               │
+│   │   │               └───utils
+│   │   │                       SudokuValidator.java
+│   │   │
+│   │   └───resources
+│   │       └───sudokus
+│   │               sudoku_dificil.txt
+│   │               sudoku_facil.txt
+│   │               sudoku_medio.txt
+│   │
+│   └───test
+│       ├───java
+│       │   └───br
+│       │       └───edu
+│       │           └───sudoku
+│       │               │   BacktrackingSolverTest.java
+│       │               │   BranchAndBoundSolverTest.java
+│       │               │   QuickPerformanceTest.java
+│       │               │   SolverComparisonTest.java
+│       │               │   SudokuValidatorTest.java
+│       │               │
+│       │               └───experiment
+│       │                       PerformanceComparisonTest.java
+│       │
+│       └───resources
+│           └───sudokus
+│                   testSudoku.txt
+│
+└───target
+    │   sudoku-solver-taal-1.0.jar
+    │
+    ├───classes
+    │   ├───br
+    │   │   └───edu
+    │   │       └───sudoku
+    │   │           ├───experiment
+    │   │           │       ExperimentRunner.class
+    │   │           │
+    │   │           ├───heuristics
+    │   │           │       MRVHeuristic.class
+    │   │           │       VariableOrderingHeuristic.class
+    │   │           │
+    │   │           ├───io
+    │   │           │       SudokuReader.class
+    │   │           │       SudokuWriter.class
+    │   │           │
+    │   │           ├───metrics
+    │   │           │       Metrics.class
+    │   │           │
+    │   │           ├───model
+    │   │           │       SudokuBoard.class
+    │   │           │
+    │   │           ├───solver
+    │   │           │   │   SudokuSolver.class
+    │   │           │   │
+    │   │           │   ├───backtracking
+    │   │           │   │       BacktrackingAlgorithm.class
+    │   │           │   │       BacktrackingSolver.class
+    │   │           │   │
+    │   │           │   ├───branchandbound
+    │   │           │   │       BranchAndBoundAlgorithm.class
+    │   │           │   │       BranchAndBoundSolver.class
+    │   │           │   │
+    │   │           │   ├───dynamicprogramming
+    │   │           │   │       DynamicProgrammingAlgorithm.class
+    │   │           │   │       DynamicProgrammingSolver.class
+    │   │           │   │
+    │   │           │   └───greedy
+    │   │           │           GreedyAlgorithm.class
+    │   │           │           GreedySolver.class
+    │   │           │
+    │   │           └───utils
+    │   │                   SudokuValidator.class
+    │   │
+    │   └───sudokus
+    │           sudoku_dificil.txt
+    │           sudoku_facil.txt
+    │           sudoku_medio.txt
+    │
+    ├───generated-sources
+    │   └───annotations
+    ├───generated-test-sources
+    │   └───test-annotations
+    ├───maven-archiver
+    │       pom.properties
+    │
+    ├───maven-status
+    │   └───maven-compiler-plugin
+    │       ├───compile
+    │       │   └───default-compile
+    │       │           createdFiles.lst
+    │       │           inputFiles.lst
+    │       │
+    │       └───testCompile
+    │           └───default-testCompile
+    │                   createdFiles.lst
+    │                   inputFiles.lst
+    │
+    ├───surefire-reports
+    │       br.edu.sudoku.BacktrackingSolverTest.txt
+    │       br.edu.sudoku.BranchAndBoundSolverTest.txt
+    │       br.edu.sudoku.SolverComparisonTest.txt
+    │       br.edu.sudoku.SudokuValidatorTest.txt
+    │       TEST-br.edu.sudoku.BacktrackingSolverTest.xml
+    │       TEST-br.edu.sudoku.BranchAndBoundSolverTest.xml
+    │       TEST-br.edu.sudoku.SolverComparisonTest.xml
+    │       TEST-br.edu.sudoku.SudokuValidatorTest.xml
+    │
+    └───test-classes
+        ├───br
+        │   └───edu
+        │       └───sudoku
+        │           │   BacktrackingSolverTest.class
+        │           │   BranchAndBoundSolverTest.class
+        │           │   QuickPerformanceTest.class
+        │           │   SolverComparisonTest.class
+        │           │   SudokuValidatorTest.class
+        │           │
+        │           └───experiment
+        │                   PerformanceComparisonTest.class
+        │
+        └───sudokus
+                testSudoku.txt
 
----
+```
 
 ## Descrição dos Componentes
 
@@ -87,141 +279,143 @@ src
 
 Representação do tabuleiro do Sudoku e suas operações básicas.
 
-* `SudokuBoard`: estrutura que representa o estado do tabuleiro.
-
----
+- `SudokuBoard`: Estrutura que representa o estado do tabuleiro, incluindo métodos para manipulação de células, verificação de validade e clonagem.
 
 ### Solver
 
 Implementações dos algoritmos responsáveis por resolver o Sudoku.
 
-* `SudokuSolver`: interface comum para todos os algoritmos.
-* `BacktrackingSolver`: resolução baseada em busca recursiva com retrocesso.
-* `BranchAndBoundSolver`: busca com poda de ramos inviáveis.
-* `DynamicProgrammingSolver`: tentativa de reutilização de soluções parciais.
-* `GreedySolver`: abordagem baseada em escolhas locais.
-
----
+- `SudokuSolver`: Interface comum para todos os algoritmos, definindo o contrato para resolução.
+- `BacktrackingSolver`: Resolução baseada em busca recursiva com retrocesso.
+- `BranchAndBoundSolver`: Busca com poda de ramos inviáveis baseada em limites.
+- `DynamicProgrammingSolver`: Tentativa de reutilização de soluções parciais através de memoização.
+- `GreedySolver`: Abordagem baseada em escolhas locais ótimas em cada passo.
 
 ### Heuristics
 
 Heurísticas utilizadas para melhorar a eficiência da busca.
 
-* `VariableOrderingHeuristic`: define a ordem de escolha das variáveis (células).
-
----
+- `VariableOrderingHeuristic`: Define a ordem de escolha das variáveis (células) durante a busca.
+- `MRVHeuristic`: Heurística de Valor Mais Restrito (Minimum Remaining Values) para seleção de variáveis.
 
 ### IO
 
 Responsável pela leitura e escrita de arquivos.
 
-* `SudokuReader`: leitura de instâncias de Sudoku.
-* `SudokuWriter`: escrita das soluções e resultados.
-
----
+- `SudokuReader`: Leitura de instâncias de Sudoku a partir de arquivos de texto.
+- `SudokuWriter`: Escrita das soluções e resultados em arquivos de saída.
 
 ### Metrics
 
 Coleta e armazenamento de métricas de desempenho dos algoritmos.
 
-Exemplos de métricas:
+Exemplos de métricas coletadas:
 
-* tempo de execução
-* número de nós visitados
-* número de podas
-* uso de memória
-
----
+- Tempo de execução
+- Número de nós visitados
+- Número de podas realizadas
+- Uso de memória
+- Profundidade máxima da busca
 
 ### Experiment
 
 Coordena a execução dos experimentos.
 
-* `ExperimentRunner`: executa os algoritmos sobre os mesmos problemas e registra os resultados.
-
----
+- `ExperimentRunner`: Executa os algoritmos sobre os mesmos problemas e registra os resultados para comparação.
 
 ### Utils
 
 Funções auxiliares utilizadas pelos algoritmos.
 
-* `SudokuValidator`: valida se um número pode ser inserido em determinada posição do tabuleiro.
-
----
+- `SudokuValidator`: Valida se um número pode ser inserido em determinada posição do tabuleiro, verificando regras do Sudoku.
 
 ### Test
 
 Conjunto de testes unitários utilizados para verificar a corretude das implementações.
 
-* testes de algoritmos
-* testes de validação do Sudoku
-* testes de comparação entre solvers
-
----
+- `BacktrackingSolverTest.java`: Testes específicos para o algoritmo de backtracking
+- `BranchAndBoundSolverTest.java`: Testes para branch and bound
+- `SolverComparisonTest.java`: Testes de comparação entre diferentes solvers
+- `SudokuValidatorTest.java`: Testes para o validador
+- `QuickPerformanceTest.java`: Testes de performance rápida
+- `PerformanceComparisonTest.java`: Comparações de performance detalhadas
 
 ## Formato do Arquivo de Entrada
 
 O arquivo de entrada contém uma matriz 9x9 representando o Sudoku.
 
-* números de **1 a 9** representam valores já preenchidos
-* o valor **0** representa uma célula vazia
+- Números de 1 a 9 representam valores já preenchidos
+- O valor 0 representa uma célula vazia
 
-Exemplo:
+Exemplo de arquivo de entrada:
 
 ```
-5 3 0 | 0 7 0 | 0 0 0
-6 0 0 | 1 9 5 | 0 0 0
-0 9 8 | 0 0 0 | 0 6 0
----------------------
-8 0 0 | 0 6 0 | 0 0 3
-4 0 0 | 8 0 3 | 0 0 1
-7 0 0 | 0 2 0 | 0 0 6
----------------------
-0 6 0 | 0 0 0 | 2 8 0
-0 0 0 | 4 1 9 | 0 0 5
-0 0 0 | 0 8 0 | 0 7 9 
+5 3 0 0 7 0 0 0 0
+6 0 0 1 9 5 0 0 0
+0 9 8 0 0 0 0 6 0
+8 0 0 0 6 0 0 0 3
+4 0 0 8 0 3 0 0 1
+7 0 0 0 2 0 0 0 6
+0 6 0 0 0 0 2 8 0
+0 0 0 4 1 9 0 0 5
+0 0 0 0 8 0 0 7 9
 ```
-
----
 
 ## Métricas de Avaliação
 
 Os algoritmos são comparados utilizando as seguintes métricas:
 
-* Complexidade assintótica teórica
-* Tempo de execução (análise empírica)
-* Uso de memória
-* Número de nós visitados
-* Número de podas realizadas
-* Qualidade da solução (ótima ou aproximada)
-* Escalabilidade
+- **Complexidade assintótica teórica**: Análise de tempo e espaço no pior caso
+- **Tempo de execução**: Análise empírica em diferentes instâncias
+- **Uso de memória**: Quantidade de memória utilizada durante a execução
+- **Número de nós visitados**: Total de estados explorados
+- **Número de podas realizadas**: Eficiência na redução do espaço de busca
+- **Qualidade da solução**: Se a solução é ótima ou aproximada
+- **Escalabilidade**: Como o desempenho se comporta com instâncias maiores
 
----
+## Executando os Testes
 
-## Execução do Projeto
-
-O projeto utiliza Maven.
-
-Para compilar:
-
-```
-mvn compile
-```
-
-Para executar os testes:
+Para executar os testes unitários:
 
 ```
 mvn test
 ```
 
-A execução dos experimentos é feita pela classe:
+Para executar um teste específico:
 
 ```
-ExperimentRunner
+mvn test -Dtest=NomeDoTeste
 ```
 
----
+Exemplo:
 
-## Conclusão
+```
+mvn test -Dtest=BacktrackingSolverTest
+```
 
-Este projeto permite estudar e comparar diferentes paradigmas de projeto de algoritmos aplicados a um problema clássico de busca combinatória. A análise experimental permite observar, na prática, como diferentes estratégias influenciam a eficiência da exploração do espaço de soluções.
+## Contribuição
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+### Diretrizes para Contribuição
+
+- Siga os padrões de código Java
+- Adicione testes para novas funcionalidades
+- Atualize a documentação conforme necessário
+- Certifique-se de que todos os testes passam antes de submeter
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+Copyright (c) 2026 Maria Eduarda da Nóbrega e Adrielly Carla Ferreira de Melo.
+
+## Equipe de desenvolvimento
+
+Maria Eduarda da Nóbrega e Adrielly Carla Ferreira de Melo.
