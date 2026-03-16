@@ -15,6 +15,17 @@ public class BacktrackingSolver implements SudokuSolver {
 
     private int steps = 0;
 
+    private String getDifficultyLabel() {
+        String raw = System.getProperty("difficulty", System.getProperty("sudoku.difficulty", "facil"));
+        String value = raw == null ? "facil" : raw.trim().toLowerCase();
+
+        return switch (value) {
+            case "medio" -> "MEDIO";
+            case "dificil" -> "DIFICIL";
+            default -> "FACIL";
+        };
+    }
+
     @Override
     public boolean solve(SudokuBoard board, Metrics metrics) {
         return backtrack(board, metrics);
@@ -41,6 +52,7 @@ public class BacktrackingSolver implements SudokuSolver {
 
                             System.out.println("");
                             System.out.println("=== Sudoku Solver (Backtracking) ===");
+                            System.out.println("Dificuldade: " + getDifficultyLabel());
                             System.out.println("Passo: " + steps);
                             System.out.println("Tentando colocar " + num + " em (" + row + "," + col + ")\n");
 
@@ -62,6 +74,7 @@ public class BacktrackingSolver implements SudokuSolver {
 
                             System.out.println("");
                             System.out.println("=== Sudoku Solver (Backtracking) ===");
+                            System.out.println("Dificuldade: " + getDifficultyLabel());
                             System.out.println("Passo: " + steps);
                             System.out.println("Backtracking removendo " + num + " de (" + row + "," + col + ")\n");
 

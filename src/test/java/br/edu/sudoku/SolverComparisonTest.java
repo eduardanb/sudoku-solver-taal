@@ -19,6 +19,8 @@ public class SolverComparisonTest {
 
 		String solverProp = System.getProperty("solver", "all").toLowerCase();
 		String difficulty = System.getProperty("difficulty", "facil").toLowerCase();
+		String label = formatDifficultyLabel(difficulty);
+		System.out.println("Dificuldade de teste: (" + label + ")");
 
 		String path = switch (difficulty) {
 			case "medio" -> "sudokus/sudoku_medio.txt";
@@ -33,33 +35,37 @@ public class SolverComparisonTest {
 			SudokuBoard boardBt = SudokuReader.read(path);
 			BacktrackingSolver bt = new BacktrackingSolver();
 			boolean solvedBt = bt.solve(boardBt, m1);
-			assertTrue(solvedBt, "BacktrackingSolver deve resolver o Sudoku");
-			assertTrue(isCompleteAndValid(boardBt), "Solução do Backtracking deve ser válida");
+			assertTrue(solvedBt, "BacktrackingSolver deve resolver o Sudoku (" + label + ")");
+			assertTrue(isCompleteAndValid(boardBt), "Solução do Backtracking deve ser válida (" + label + ")");
 		}
 
 		if (solverProp.equals("all") || solverProp.equals("branchandbound") || solverProp.equals("branch_and_bound")) {
 			SudokuBoard boardBb = SudokuReader.read(path);
 			BranchAndBoundSolver bb = new BranchAndBoundSolver();
 			boolean solvedBb = bb.solve(boardBb, m2);
-			assertTrue(solvedBb, "BranchAndBoundSolver deve resolver o Sudoku");
-			assertTrue(isCompleteAndValid(boardBb), "Solução do Branch and Bound deve ser válida");
+			assertTrue(solvedBb, "BranchAndBoundSolver deve resolver o Sudoku (" + label + ")");
+			assertTrue(isCompleteAndValid(boardBb), "Solução do Branch and Bound deve ser válida (" + label + ")");
 		}
 
 		if (solverProp.equals("greedy")) {
 			SudokuBoard boardG = SudokuReader.read(path);
 			GreedySolver gs = new GreedySolver();
 			boolean solvedG = gs.solve(boardG, new Metrics());
-			assertTrue(solvedG, "GreedySolver deve resolver o Sudoku quando implementado");
-			assertTrue(isCompleteAndValid(boardG), "Solução do Greedy deve ser válida");
+			assertTrue(solvedG, "GreedySolver deve resolver o Sudoku quando implementado (" + label + ")");
+			assertTrue(isCompleteAndValid(boardG), "Solução do Greedy deve ser válida (" + label + ")");
 		}
 
 		if (solverProp.equals("dynamic") || solverProp.equals("dp")) {
 			SudokuBoard boardDp = SudokuReader.read(path);
 			DynamicProgrammingSolver ds = new DynamicProgrammingSolver();
 			boolean solvedDp = ds.solve(boardDp, new Metrics());
-			assertTrue(solvedDp, "DynamicProgrammingSolver deve resolver o Sudoku quando implementado");
-			assertTrue(isCompleteAndValid(boardDp), "Solução do Dynamic Programming deve ser válida");
+			assertTrue(solvedDp, "DynamicProgrammingSolver deve resolver o Sudoku quando implementado (" + label + ")");
+			assertTrue(isCompleteAndValid(boardDp), "Solução do Dynamic Programming deve ser válida (" + label + ")");
 		}
+	}
+
+	private String formatDifficultyLabel(String difficulty) {
+		return "dificil".equalsIgnoreCase(difficulty) ? "DIFICIL" : difficulty.toLowerCase();
 	}
 
 	private boolean isCompleteAndValid(SudokuBoard board) {

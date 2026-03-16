@@ -23,6 +23,17 @@ public class BranchAndBoundSolver implements SudokuSolver {
 
     private int steps = 0;
 
+    private String getDifficultyLabel() {
+        String raw = System.getProperty("difficulty", System.getProperty("sudoku.difficulty", "facil"));
+        String value = raw == null ? "facil" : raw.trim().toLowerCase();
+
+        return switch (value) {
+            case "medio" -> "MEDIO";
+            case "dificil" -> "DIFICIL";
+            default -> "FACIL";
+        };
+    }
+
     private VariableOrderingHeuristic heuristic = new MRVHeuristic();
 
     @Override
@@ -54,6 +65,7 @@ public class BranchAndBoundSolver implements SudokuSolver {
             clearConsole();
 
             System.out.println("=== Sudoku Solver (Branch and Bound) ===");
+            System.out.println("Dificuldade: " + getDifficultyLabel());
             System.out.println("Passo: " + steps);
             System.out.println("Tentando colocar " + num + " em (" + row + "," + col + ")\n");
 
@@ -74,6 +86,7 @@ public class BranchAndBoundSolver implements SudokuSolver {
             clearConsole();
 
             System.out.println("=== Sudoku Solver (Branch and Bound) ===");
+            System.out.println("Dificuldade: " + getDifficultyLabel());
             System.out.println("Passo: " + steps);
             System.out.println("Backtracking removendo " + num + " de (" + row + "," + col + ")\n");
 

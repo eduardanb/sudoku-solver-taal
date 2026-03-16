@@ -141,6 +141,9 @@ public class ExperimentRunner {
 
                 Metrics metrics = new Metrics();
 
+                System.setProperty("difficulty", nomeDificuldadeArquivo);
+                System.setProperty("sudoku.difficulty", nomeDificuldadeArquivo);
+
                 long inicio = System.currentTimeMillis();
 
                 boolean resolvido = solver.solve(board, metrics);
