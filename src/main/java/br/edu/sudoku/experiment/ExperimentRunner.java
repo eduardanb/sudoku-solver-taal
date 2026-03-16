@@ -15,6 +15,10 @@ import br.edu.sudoku.solver.SudokuSolver;
 
 import java.util.Scanner;
 
+/**
+ * Classe responsável por executar os experimentos do projeto
+ * e coordenar o fluxo principal do sistema.
+ */
 public class ExperimentRunner {
 
     public static void main(String[] args) {
@@ -96,27 +100,20 @@ public class ExperimentRunner {
 
                 SudokuSolver solver = null;
                 String nomeAlgoritmoArquivo = "";
+                String nomeAlgoritmo = "";
 
                 switch (algoritmo) {
 
                     case 1:
                         solver = new BacktrackingSolver();
                         nomeAlgoritmoArquivo = "backtracking";
-
-                        System.out.println("\nAlgoritmo escolhido: " +
-                                "\n╔══════════════════════╗\n" +
-                                "      BACKTRACKING\n" +
-                                "╚══════════════════════╝");
+                        nomeAlgoritmo = "BACKTRACKING";
                         break;
 
                     case 2:
                         solver = new BranchAndBoundSolver();
                         nomeAlgoritmoArquivo = "branchandbound";
-
-                        System.out.println("\nAlgoritmo escolhido: " +
-                                "\n╔══════════════════════════╗\n" +
-                                "       BRANCH AND BOUND\n" +
-                                "╚══════════════════════════╝");
+                        nomeAlgoritmo = "BRANCH AND BOUND";
                         break;
 
                     case 3:
@@ -131,6 +128,11 @@ public class ExperimentRunner {
                         System.out.println("Algoritmo inválido.");
                         continue;
                 }
+
+                System.out.println("\nAlgoritmo escolhido:");
+                System.out.println("╔══════════════════════════════╗");
+                System.out.println("        " + nomeAlgoritmo);
+                System.out.println("╚══════════════════════════════╝");
 
                 System.out.println("Dificuldade: " + nomeDificuldade);
 
@@ -157,8 +159,11 @@ public class ExperimentRunner {
 
                     SudokuWriter.writeToFile(board, arquivoSaida);
 
-                    System.out.println("\nTempo de execução: " + (fim - inicio) + " ms");
+                    System.out.println("\n================ RESULTADOS ================");
+                    System.out.println("Tempo de execução: " + (fim - inicio) + " ms");
                     System.out.println("Nós visitados: " + metrics.getVisitedNodes());
+                    System.out.println("Backtracks: " + metrics.getBacktracks());
+                    System.out.println("============================================");
 
                 } else {
 

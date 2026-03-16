@@ -10,6 +10,8 @@
 
 package br.edu.sudoku.solver;
 
+import br.edu.sudoku.heuristics.MRVHeuristic;
+import br.edu.sudoku.heuristics.VariableOrderingHeuristic;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.utils.SudokuValidator;
@@ -21,6 +23,8 @@ public class BranchAndBoundSolver implements SudokuSolver {
 
     private int steps = 0;
 
+    private VariableOrderingHeuristic heuristic = new MRVHeuristic();
+
     @Override
     public boolean solve(SudokuBoard board, Metrics metrics) {
         return branchAndBound(board, metrics);
@@ -28,7 +32,10 @@ public class BranchAndBoundSolver implements SudokuSolver {
 
     private boolean branchAndBound(SudokuBoard board, Metrics metrics) {
 
-        int[] cell = findBestCell(board);
+        // Conta um estado explorado
+        metrics.incrementVisitedNodes();
+
+        int[] cell = heuristic.selectCell(board);
 
         if (cell == null) {
             return true;
@@ -40,8 +47,6 @@ public class BranchAndBoundSolver implements SudokuSolver {
         List<Integer> candidates = getCandidates(board, row, col);
 
         for (int num : candidates) {
-
-            metrics.incrementVisitedNodes();
 
             board.set(row, col, num);
             steps++;
@@ -60,7 +65,10 @@ public class BranchAndBoundSolver implements SudokuSolver {
                 return true;
             }
 
+            // Backtrack
             board.set(row, col, 0);
+            metrics.incrementBacktracks();
+
             steps++;
 
             clearConsole();
@@ -75,35 +83,6 @@ public class BranchAndBoundSolver implements SudokuSolver {
         }
 
         return false;
-    }
-
-    private int[] findBestCell(SudokuBoard board) {
-
-        int minOptions = Integer.MAX_VALUE;
-        int[] bestCell = null;
-
-        for (int row = 0; row < 9; row++) {
-
-            for (int col = 0; col < 9; col++) {
-
-                if (board.get(row, col) == 0) {
-
-                    List<Integer> candidates = getCandidates(board, row, col);
-
-                    if (candidates.size() < minOptions) {
-
-                        minOptions = candidates.size();
-                        bestCell = new int[]{row, col};
-
-                        if (minOptions == 1) {
-                            return bestCell;
-                        }
-                    }
-                }
-            }
-        }
-
-        return bestCell;
     }
 
     private List<Integer> getCandidates(SudokuBoard board, int row, int col) {

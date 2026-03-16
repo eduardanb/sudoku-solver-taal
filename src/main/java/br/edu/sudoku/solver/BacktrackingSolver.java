@@ -1,8 +1,8 @@
 /**
  * O tempo depende da ordem das casas vazias
-   depende da ordem dos números testados (1–9)
+ depende da ordem dos números testados (1–9)
  * Um "Sudoku" difícil pode acabar sendo resolvido antes
-   de um médio dependendo do caminho que o algoritmo tenta.
+ de um médio dependendo do caminho que o algoritmo tenta.
  */
 
 package br.edu.sudoku.solver;
@@ -22,14 +22,15 @@ public class BacktrackingSolver implements SudokuSolver {
 
     private boolean backtrack(SudokuBoard board, Metrics metrics) {
 
+        // Conta um novo estado explorado
+        metrics.incrementVisitedNodes();
+
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
 
                 if (board.get(row, col) == 0) {
 
                     for (int num = 1; num <= 9; num++) {
-
-                        metrics.incrementVisitedNodes();
 
                         if (SudokuValidator.isValid(board, row, col, num)) {
 
@@ -51,7 +52,9 @@ public class BacktrackingSolver implements SudokuSolver {
                                 return true;
                             }
 
+                            // Backtrack
                             board.set(row, col, 0);
+                            metrics.incrementBacktracks();
 
                             steps++;
 

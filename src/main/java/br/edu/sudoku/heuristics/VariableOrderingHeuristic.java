@@ -8,3 +8,18 @@
  *
  * Exemplo: selecionar a célula com menor número de valores possíveis.
  */
+
+package br.edu.sudoku.heuristics;
+
+import br.edu.sudoku.model.SudokuBoard;
+
+/**
+ * Interface para heurísticas de ordenação de variáveis.
+ * Responsável por escolher qual célula vazia será expandida
+ * primeiro durante a busca.
+ */
+public interface VariableOrderingHeuristic {
+
+    int[] selectCell(SudokuBoard board);
+
+}
