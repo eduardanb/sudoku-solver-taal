@@ -7,9 +7,6 @@ import br.edu.sudoku.solver.SudokuSolver;
 import br.edu.sudoku.solver.backtracking.BacktrackingSolver;
 import br.edu.sudoku.solver.branchandbound.BranchAndBoundSolver;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PerformanceComparisonTest {
 
     private static final int EXECUCOES = 10;
@@ -48,9 +45,9 @@ public class PerformanceComparisonTest {
         System.setProperty("difficulty", dificuldade);
         System.setProperty("sudoku.difficulty", dificuldade);
 
-        List<Double> tempos = new ArrayList<>();
-        List<Long> nosVisitados = new ArrayList<>();
-        List<Long> backtracks = new ArrayList<>();
+        double[] tempos = new double[EXECUCOES];
+        long[] nosVisitados = new long[EXECUCOES];
+        long[] backtracks = new long[EXECUCOES];
 
         for (int i = 0; i < EXECUCOES; i++) {
 
@@ -58,64 +55,48 @@ public class PerformanceComparisonTest {
             Metrics metricas = new Metrics();
 
             long inicio = System.nanoTime();
-
             solver.solve(tabuleiro, metricas);
-
             long fim = System.nanoTime();
 
-            double tempoMs = (fim - inicio) / 1_000_000.0;
-
-            tempos.add(tempoMs);
-            nosVisitados.add(metricas.getVisitedNodes());
-            backtracks.add(metricas.getBacktracks());
+            tempos[i] = (fim - inicio) / 1_000_000.0;
+            nosVisitados[i] = metricas.getVisitedNodes();
+            backtracks[i] = metricas.getBacktracks();
         }
 
         double tempoMedio = media(tempos);
         double desvioPadrao = desvio(tempos, tempoMedio);
-
         double mediaNos = mediaLong(nosVisitados);
         double mediaBacks = mediaLong(backtracks);
 
         System.out.println("\nAlgoritmo: " + nome);
         System.out.println("Execuções: " + EXECUCOES);
-
         System.out.printf("Tempo médio: %.3f ms\n", tempoMedio);
         System.out.printf("Desvio padrão: %.3f ms\n", desvioPadrao);
-
-        System.out.println("Nós visitados (média): " + mediaNos);
-        System.out.println("Backtracks (média): " + mediaBacks);
+        System.out.printf("Nós visitados (média): %.0f\n", mediaNos);
+        System.out.printf("Backtracks (média): %.0f\n", mediaBacks);
     }
 
-    private static double media(List<Double> lista) {
-
+    private static double media(double[] array) {
         double soma = 0;
-
-        for (double valor : lista) {
+        for (double valor : array) {
             soma += valor;
         }
-
-        return soma / lista.size();
+        return soma / array.length;
     }
 
-    private static double desvio(List<Double> lista, double media) {
-
+    private static double desvio(double[] array, double media) {
         double soma = 0;
-
-        for (double valor : lista) {
+        for (double valor : array) {
             soma += Math.pow(valor - media, 2);
         }
-
-        return Math.sqrt(soma / lista.size());
+        return Math.sqrt(soma / array.length);
     }
 
-    private static double mediaLong(List<Long> lista) {
-
+    private static double mediaLong(long[] array) {
         long soma = 0;
-
-        for (long valor : lista) {
+        for (long valor : array) {
             soma += valor;
         }
-
-        return (double) soma / lista.size();
+        return (double) soma / array.length;
     }
 }

@@ -8,9 +8,6 @@ import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.utils.SudokuValidator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BranchAndBoundSolver implements BranchAndBoundAlgorithm {
 
     private int passos = 0;
@@ -58,9 +55,11 @@ public class BranchAndBoundSolver implements BranchAndBoundAlgorithm {
         int linha = celula[0];
         int coluna = celula[1];
 
-        List<Integer> candidatos = obterCandidatos(tabuleiro, linha, coluna);
+        int[] candidatos = obterCandidatos(tabuleiro, linha, coluna);
+        int numCandidatos = candidatos[0]; // índice 0 = quantidade de candidatos
 
-        for (int numero : candidatos) {
+        for (int i = 1; i <= numCandidatos; i++) {
+            int numero = candidatos[i];
 
             tabuleiro.set(linha, coluna, numero);
             passos++;
@@ -101,17 +100,19 @@ public class BranchAndBoundSolver implements BranchAndBoundAlgorithm {
         return false;
     }
 
-    private List<Integer> obterCandidatos(SudokuBoard tabuleiro, int linha, int coluna) {
+    private int[] obterCandidatos(SudokuBoard tabuleiro, int linha, int coluna) {
 
-        List<Integer> candidatos = new ArrayList<>();
+        int[] candidatos = new int[10];
+        int cont = 0;
 
         for (int numero = 1; numero <= 9; numero++) {
-
             if (SudokuValidator.isValid(tabuleiro, linha, coluna, numero)) {
-                candidatos.add(numero);
+                cont++;
+                candidatos[cont] = numero;
             }
         }
 
+        candidatos[0] = cont;
         return candidatos;
     }
 

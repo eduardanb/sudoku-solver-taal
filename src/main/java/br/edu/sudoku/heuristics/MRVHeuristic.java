@@ -9,9 +9,6 @@ package br.edu.sudoku.heuristics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.utils.SudokuValidator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MRVHeuristic implements VariableOrderingHeuristic {
 
     @Override
@@ -26,11 +23,11 @@ public class MRVHeuristic implements VariableOrderingHeuristic {
 
                 if (board.get(linha, coluna) == 0) {
 
-                    List<Integer> candidatos = obterCandidatos(board, linha, coluna);
+                    int[] candidatos = obterCandidatos(board, linha, coluna);
+                    int numCandidatos = candidatos[0]; // posição 0 guarda a quantidade de candidatos
 
-                    if (candidatos.size() < minimoOpcoes) {
-
-                        minimoOpcoes = candidatos.size();
+                    if (numCandidatos < minimoOpcoes) {
+                        minimoOpcoes = numCandidatos;
                         melhorCelula = new int[]{linha, coluna};
 
                         if (minimoOpcoes == 1) {
@@ -44,17 +41,20 @@ public class MRVHeuristic implements VariableOrderingHeuristic {
         return melhorCelula;
     }
 
-    private List<Integer> obterCandidatos(SudokuBoard board, int linha, int coluna) {
+    private int[] obterCandidatos(SudokuBoard board, int linha, int coluna) {
 
-        List<Integer> candidatos = new ArrayList<>();
+        int[] candidatos = new int[10]; // índice 0 = contagem, 1..9 = valores possíveis
+        int cont = 0;
 
         for (int numero = 1; numero <= 9; numero++) {
 
             if (SudokuValidator.isValid(board, linha, coluna, numero)) {
-                candidatos.add(numero);
+                cont++;
+                candidatos[cont] = numero;
             }
         }
 
+        candidatos[0] = cont;
         return candidatos;
     }
 }
