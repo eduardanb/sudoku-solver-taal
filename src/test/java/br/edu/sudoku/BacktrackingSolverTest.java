@@ -3,7 +3,7 @@ package br.edu.sudoku;
 import br.edu.sudoku.io.SudokuReader;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
-import br.edu.sudoku.solver.BacktrackingSolver;
+import br.edu.sudoku.solver.backtracking.BacktrackingSolver;
 import br.edu.sudoku.utils.SudokuValidator;
 import org.junit.jupiter.api.Test;
 
@@ -12,51 +12,75 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BacktrackingSolverTest {
 
     @Test
-    public void testBacktrackingSolvesEasySudoku() throws Exception {
+    public void testBacktrackingSolvesSudokus() throws Exception {
+
         for (int i = 0; i < 3; i++) {
-            String diff = switch (i) {
-                case 1 -> "medio";
-                case 2 -> "dificil";
-                default -> "facil";
-            };
 
-            String label = formatDifficultyLabel(diff);
-            System.out.println("Dificuldade de teste: (" + label + ")");
+            String dificuldade;
 
-            String path = switch (diff) {
-                case "medio" -> "sudokus/sudoku_medio.txt";
-                case "dificil" -> "sudokus/sudoku_dificil.txt";
-                default -> "sudokus/sudoku_facil.txt";
-            };
+            if (i == 1) {
+                dificuldade = "medio";
+            } else if (i == 2) {
+                dificuldade = "dificil";
+            } else {
+                dificuldade = "facil";
+            }
 
-            SudokuBoard board = SudokuReader.read(path);
-            Metrics metrics = new Metrics();
+            String rotulo = formatarRotuloDificuldade(dificuldade);
+            System.out.println("Dificuldade de teste: (" + rotulo + ")");
 
-            BacktrackingSolver solver = new BacktrackingSolver();
-            boolean solved = solver.solve(board, metrics);
+            String caminho;
 
-            assertTrue(solved, "BacktrackingSolver deve resolver o sudoku (" + label + ")");
-            assertTrue(isCompleteAndValid(board), "Solução produzida deve ser completa e válida (" + label + ")");
+            if (dificuldade.equals("medio")) {
+                caminho = "sudokus/sudoku_medio.txt";
+            } else if (dificuldade.equals("dificil")) {
+                caminho = "sudokus/sudoku_dificil.txt";
+            } else {
+                caminho = "sudokus/sudoku_facil.txt";
+            }
+
+            SudokuBoard tabuleiro = SudokuReader.read(caminho);
+            Metrics metricas = new Metrics();
+
+            BacktrackingSolver solver = new BacktrackingSolver(false);
+            boolean resolvido = solver.solve(tabuleiro, metricas);
+
+            assertTrue(resolvido, "BacktrackingSolver deve resolver o sudoku (" + rotulo + ")");
+            assertTrue(tabuleiroCompletoEValido(tabuleiro), "Solução produzida deve ser completa e válida (" + rotulo + ")");
+
+            System.out.println("Sudoku resolvido com sucesso (" + rotulo + ")\n");
         }
     }
 
-    private String formatDifficultyLabel(String difficulty) {
-        String value = difficulty == null ? "facil" : difficulty.trim().toLowerCase();
-        return "dificil".equals(value) ? "DIFICIL" : value;
+    private String formatarRotuloDificuldade(String dificuldade) {
+        String valor = dificuldade == null ? "facil" : dificuldade.trim().toLowerCase();
+        if ("dificil".equals(valor)) {
+            return "dificil";
+        } else {
+            return valor;
+        }
     }
 
-    private boolean isCompleteAndValid(SudokuBoard board) {
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                int v = board.get(r, c);
-                if (v < 1 || v > 9) return false;
+    private boolean tabuleiroCompletoEValido(SudokuBoard tabuleiro) {
 
-                board.set(r, c, 0);
-                boolean ok = SudokuValidator.isValid(board, r, c, v);
-                board.set(r, c, v);
-                if (!ok) return false;
+        for (int linha = 0; linha < 9; linha++) {
+            for (int coluna = 0; coluna < 9; coluna++) {
+
+                int valor = tabuleiro.get(linha, coluna);
+                if (valor < 1 || valor > 9) {
+                    return false;
+                }
+
+                tabuleiro.set(linha, coluna, 0);
+                boolean valido = SudokuValidator.isValid(tabuleiro, linha, coluna, valor);
+                tabuleiro.set(linha, coluna, valor);
+
+                if (!valido) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 }

@@ -1,11 +1,5 @@
 /**
  * Classe responsável pela leitura de instâncias do problema Sudoku
- * a partir de arquivos de entrada.
- * O arquivo contém uma matriz 9x9 onde:
- * - valores de 1 a 9 representam números fixos no tabuleiro
- * - o valor 0 representa uma célula vazia
- * O conteúdo lido é convertido para um objeto SudokuBoard,
- * que será utilizado pelos algoritmos de resolução.
  */
 
 package br.edu.sudoku.io;
@@ -30,11 +24,11 @@ public class SudokuReader {
 
         for (int i = 0; i < 9; i++) {
 
-            String line = reader.readLine();
-            String[] values = line.split(" ");
+            String linha = reader.readLine();
+            String[] valores = linha.split(" ");
 
             for (int j = 0; j < 9; j++) {
-                board[i][j] = Integer.parseInt(values[j]);
+                board[i][j] = Integer.parseInt(valores[j]);
             }
         }
 

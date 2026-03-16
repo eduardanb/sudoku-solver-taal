@@ -1,3 +1,9 @@
+/**
+ * Implementação da heurística MRV (Minimum Remaining Values).
+ * Escolhe a célula vazia com o menor número de valores possíveis.
+ * Isso reduz o espaço de busca do algoritmo.
+ */
+
 package br.edu.sudoku.heuristics;
 
 import br.edu.sudoku.model.SudokuBoard;
@@ -6,55 +12,49 @@ import br.edu.sudoku.utils.SudokuValidator;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Implementação da heurística MRV (Minimum Remaining Values).
- *
- * Escolhe a célula vazia com o menor número de valores possíveis.
- * Isso reduz o espaço de busca do algoritmo.
- */
 public class MRVHeuristic implements VariableOrderingHeuristic {
 
     @Override
-    public int[] selectCell(SudokuBoard board) {
+    public int[] selecionarCelula(SudokuBoard board) {
 
-        int minOptions = Integer.MAX_VALUE;
-        int[] bestCell = null;
+        int minimoOpcoes = Integer.MAX_VALUE;
+        int[] melhorCelula = null;
 
-        for (int row = 0; row < 9; row++) {
+        for (int linha = 0; linha < 9; linha++) {
 
-            for (int col = 0; col < 9; col++) {
+            for (int coluna = 0; coluna < 9; coluna++) {
 
-                if (board.get(row, col) == 0) {
+                if (board.get(linha, coluna) == 0) {
 
-                    List<Integer> candidates = getCandidates(board, row, col);
+                    List<Integer> candidatos = obterCandidatos(board, linha, coluna);
 
-                    if (candidates.size() < minOptions) {
+                    if (candidatos.size() < minimoOpcoes) {
 
-                        minOptions = candidates.size();
-                        bestCell = new int[]{row, col};
+                        minimoOpcoes = candidatos.size();
+                        melhorCelula = new int[]{linha, coluna};
 
-                        if (minOptions == 1) {
-                            return bestCell;
+                        if (minimoOpcoes == 1) {
+                            return melhorCelula;
                         }
                     }
                 }
             }
         }
 
-        return bestCell;
+        return melhorCelula;
     }
 
-    private List<Integer> getCandidates(SudokuBoard board, int row, int col) {
+    private List<Integer> obterCandidatos(SudokuBoard board, int linha, int coluna) {
 
-        List<Integer> candidates = new ArrayList<>();
+        List<Integer> candidatos = new ArrayList<>();
 
-        for (int num = 1; num <= 9; num++) {
+        for (int numero = 1; numero <= 9; numero++) {
 
-            if (SudokuValidator.isValid(board, row, col, num)) {
-                candidates.add(num);
+            if (SudokuValidator.isValid(board, linha, coluna, numero)) {
+                candidatos.add(numero);
             }
         }
 
-        return candidates;
+        return candidatos;
     }
 }

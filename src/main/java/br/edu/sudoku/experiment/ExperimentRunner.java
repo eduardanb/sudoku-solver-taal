@@ -9,16 +9,12 @@ import br.edu.sudoku.io.SudokuReader;
 import br.edu.sudoku.io.SudokuWriter;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
-import br.edu.sudoku.solver.BacktrackingSolver;
-import br.edu.sudoku.solver.BranchAndBoundSolver;
+import br.edu.sudoku.solver.backtracking.BacktrackingSolver;
+import br.edu.sudoku.solver.branchandbound.BranchAndBoundSolver;
 import br.edu.sudoku.solver.SudokuSolver;
 
 import java.util.Scanner;
 
-/**
- * Classe responsável por executar os experimentos do projeto
- * e coordenar o fluxo principal do sistema.
- */
 public class ExperimentRunner {
 
     public static void main(String[] args) {
@@ -39,14 +35,14 @@ public class ExperimentRunner {
 
             System.out.println("1 - Backtracking");
             System.out.println("2 - Branch and Bound");
-            System.out.println("3 - Greedy");
-            System.out.println("4 - Dynamic Programming");
+            System.out.println("3 - Guloso (Greedy)");
+            System.out.println("4 - Programação Dinâmica");
             System.out.println("0 - Sair");
 
             System.out.print("\nEscolha o algoritmo: ");
-            int algoritmo = scanner.nextInt();
+            int opcaoAlgoritmo = scanner.nextInt();
 
-            if (algoritmo == 0) {
+            if (opcaoAlgoritmo == 0) {
                 System.out.println("Encerrando...");
                 break;
             }
@@ -59,9 +55,9 @@ public class ExperimentRunner {
             System.out.println("0 - Voltar");
 
             System.out.print("Opção: ");
-            int dificuldade = scanner.nextInt();
+            int opcaoDificuldade = scanner.nextInt();
 
-            if (dificuldade == 0) {
+            if (opcaoDificuldade == 0) {
                 continue;
             }
 
@@ -69,7 +65,7 @@ public class ExperimentRunner {
             String nomeDificuldade = "";
             String nomeDificuldadeArquivo = "";
 
-            switch (dificuldade) {
+            switch (opcaoDificuldade) {
 
                 case 1:
                     caminhoArquivo = "sudokus/sudoku_facil.txt";
@@ -96,13 +92,13 @@ public class ExperimentRunner {
 
             try {
 
-                SudokuBoard board = SudokuReader.read(caminhoArquivo);
+                SudokuBoard tabuleiro = SudokuReader.read(caminhoArquivo);
 
                 SudokuSolver solver = null;
                 String nomeAlgoritmoArquivo = "";
                 String nomeAlgoritmo = "";
 
-                switch (algoritmo) {
+                switch (opcaoAlgoritmo) {
 
                     case 1:
                         solver = new BacktrackingSolver();
@@ -117,11 +113,11 @@ public class ExperimentRunner {
                         break;
 
                     case 3:
-                        System.out.println("Greedy ainda não implementado.");
+                        System.out.println("Algoritmo guloso ainda não implementado.");
                         continue;
 
                     case 4:
-                        System.out.println("Dynamic Programming ainda não implementado.");
+                        System.out.println("Programação dinâmica ainda não implementada.");
                         continue;
 
                     default:
@@ -137,35 +133,35 @@ public class ExperimentRunner {
                 System.out.println("Dificuldade: " + nomeDificuldade);
 
                 System.out.println("\nSudoku inicial:\n");
-                SudokuWriter.printBoard(board);
+                SudokuWriter.printBoard(tabuleiro);
 
-                Metrics metrics = new Metrics();
+                Metrics metricas = new Metrics();
 
                 System.setProperty("difficulty", nomeDificuldadeArquivo);
                 System.setProperty("sudoku.difficulty", nomeDificuldadeArquivo);
 
                 long inicio = System.currentTimeMillis();
 
-                boolean resolvido = solver.solve(board, metrics);
+                boolean resolvido = solver.solve(tabuleiro, metricas);
 
                 long fim = System.currentTimeMillis();
 
                 if (resolvido) {
 
                     System.out.println("\nSudoku resolvido:\n");
-                    SudokuWriter.printBoard(board);
+                    SudokuWriter.printBoard(tabuleiro);
 
                     String arquivoSaida =
                             "src/main/resources/sudokus/sudoku_" +
                                     nomeDificuldadeArquivo + "_" +
                                     nomeAlgoritmoArquivo + ".txt";
 
-                    SudokuWriter.writeToFile(board, arquivoSaida);
+                    SudokuWriter.writeToFile(tabuleiro, arquivoSaida);
 
                     System.out.println("\n================ RESULTADOS ================");
                     System.out.println("Tempo de execução: " + (fim - inicio) + " ms");
-                    System.out.println("Nós visitados: " + metrics.getVisitedNodes());
-                    System.out.println("Backtracks: " + metrics.getBacktracks());
+                    System.out.println("Nós visitados: " + metricas.getVisitedNodes());
+                    System.out.println("Backtracks: " + metricas.getBacktracks());
                     System.out.println("============================================");
 
                 } else {

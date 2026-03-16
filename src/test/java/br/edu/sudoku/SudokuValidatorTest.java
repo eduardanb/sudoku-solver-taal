@@ -11,61 +11,61 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SudokuValidatorTest {
 
 	@BeforeEach
-	public void printDifficulty() {
-		String difficulty = System.getProperty("difficulty", "facil");
-		String label = "dificil".equalsIgnoreCase(difficulty) ? "DIFICIL" : difficulty.toLowerCase();
-		System.out.println("Dificuldade de teste: (" + label + ")");
+	public void imprimirDificuldade() {
+		String dificuldade = System.getProperty("difficulty", "medio"); // Defina aqui o nível de dificuldade a ser testado
+		String rotulo = "dificil".equalsIgnoreCase(dificuldade) ? "dificil" : dificuldade.toLowerCase();
+		System.out.println("Dificuldade de teste: (" + rotulo + ")");
 	}
 
 	@Test
-	public void testValidInsertion() {
-		int[][] board = new int[9][9];
-		board[0][0] = 5;
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeInsercaoValida() {
+		int[][] tabuleiroArray = new int[9][9];
+		tabuleiroArray[0][0] = 5;
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertTrue(SudokuValidator.isValid(sb, 0, 1, 3));
+		assertTrue(SudokuValidator.isValid(tabuleiro, 0, 1, 3));
 	}
 
 	@Test
-	public void testRowConflict() {
-		int[][] board = new int[9][9];
-		board[0][0] = 5;
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeConflitoLinha() {
+		int[][] tabuleiroArray = new int[9][9];
+		tabuleiroArray[0][0] = 5;
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertFalse(SudokuValidator.isValid(sb, 0, 2, 5));
+		assertFalse(SudokuValidator.isValid(tabuleiro, 0, 2, 5));
 	}
 
 	@Test
-	public void testColumnConflict() {
-		int[][] board = new int[9][9];
-		board[0][0] = 7;
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeConflitoColuna() {
+		int[][] tabuleiroArray = new int[9][9];
+		tabuleiroArray[0][0] = 7;
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertFalse(SudokuValidator.isValid(sb, 2, 0, 7));
+		assertFalse(SudokuValidator.isValid(tabuleiro, 2, 0, 7));
 	}
 
 	@Test
-	public void testBoxConflict() {
-		int[][] board = new int[9][9];
-		board[1][1] = 9; 
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeConflitoSubGrade() {
+		int[][] tabuleiroArray = new int[9][9];
+		tabuleiroArray[1][1] = 9;
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertFalse(SudokuValidator.isValid(sb, 0, 2, 9));
+		assertFalse(SudokuValidator.isValid(tabuleiro, 0, 2, 9));
 	}
 
 	@Test
-	public void testInvalidZero() {
-		int[][] board = new int[9][9];
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeNumeroZeroInvalido() {
+		int[][] tabuleiroArray = new int[9][9];
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertFalse(SudokuValidator.isValid(sb, 0, 0, 0));
+		assertFalse(SudokuValidator.isValid(tabuleiro, 0, 0, 0));
 	}
 
 	@Test
-	public void testInvalidGreaterThanNine() {
-		int[][] board = new int[9][9];
-		SudokuBoard sb = new SudokuBoard(board);
+	public void testeNumeroMaiorQueNoveInvalido() {
+		int[][] tabuleiroArray = new int[9][9];
+		SudokuBoard tabuleiro = new SudokuBoard(tabuleiroArray);
 
-		assertFalse(SudokuValidator.isValid(sb, 0, 0, 10));
+		assertFalse(SudokuValidator.isValid(tabuleiro, 0, 0, 10));
 	}
 }

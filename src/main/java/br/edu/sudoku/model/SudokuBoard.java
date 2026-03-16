@@ -12,7 +12,7 @@ public class SudokuBoard {
     private boolean[][] fixed;
 
     // cor ANSI azul para números fixos
-    private static final String CYAN = "\u001B[36m";
+    private static final String CIANO = "\u001B[36m";
     private static final String RESET = "\u001B[0m";
 
     public SudokuBoard(int[][] board) {
@@ -28,12 +28,12 @@ public class SudokuBoard {
         }
     }
 
-    public int get(int row, int col) {
-        return board[row][col];
+    public int get(int linha, int col) {
+        return board[linha][col];
     }
 
-    public void set(int row, int col, int value) {
-        board[row][col] = value;
+    public void set(int linha, int col, int value) {
+        board[linha][col] = value;
     }
 
     public void printBoard() {
@@ -53,10 +53,8 @@ public class SudokuBoard {
                 } else {
 
                     if (fixed[i][j]) {
-                        // número original → azul
-                        System.out.print(CYAN + value + RESET + " ");
+                        System.out.print(CIANO + value + RESET + " ");
                     } else {
-                        // número colocado pelo algoritmo
                         System.out.print(value + " ");
                     }
                 }
