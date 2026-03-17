@@ -13,6 +13,10 @@ As estratégias implementadas são:
 
 O sistema executa os algoritmos sobre instâncias de Sudoku fornecidas por arquivos de entrada e coleta métricas que permitem comparar formalmente o desempenho de cada abordagem.
 
+`LINK DO RELATÓRIO:` https://docs.google.com/document/d/1i_WHgjf_wGwaYyXxn1F9tmtGn_zP-Su9bXPqPEhaLxo/edit?usp=sharing. 
+
+(Acessar com email institucional.)
+
 ## Objetivos
 
 O projeto busca:
@@ -392,23 +396,6 @@ Exemplo:
 ```
 mvn test -Dtest=BacktrackingSolverTest
 ```
-
-## Contribuição
-
-Contribuições são bem-vindas! Para contribuir:
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
-
-### Diretrizes para Contribuição
-
-- Siga os padrões de código Java
-- Adicione testes para novas funcionalidades
-- Atualize a documentação conforme necessário
-- Certifique-se de que todos os testes passam antes de submeter
 
 ## Licença
 
