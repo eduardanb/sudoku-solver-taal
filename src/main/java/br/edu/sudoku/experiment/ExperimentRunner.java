@@ -17,6 +17,15 @@ import java.util.Scanner;
 
 public class ExperimentRunner {
 
+    private static Integer lerOpcaoInteira(Scanner scanner) {
+        if (!scanner.hasNextInt()) {
+            String entradaInvalida = scanner.next();
+            System.out.println("Entrada inválida: '" + entradaInvalida + "'. Digite um número do menu.");
+            return null;
+        }
+        return scanner.nextInt();
+    }
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -40,11 +49,20 @@ public class ExperimentRunner {
             System.out.println("0 - Sair");
 
             System.out.print("\nEscolha o algoritmo: ");
-            int opcaoAlgoritmo = scanner.nextInt();
+            Integer opcaoAlgoritmoLida = lerOpcaoInteira(scanner);
+            if (opcaoAlgoritmoLida == null) {
+                continue;
+            }
+            int opcaoAlgoritmo = opcaoAlgoritmoLida;
 
             if (opcaoAlgoritmo == 0) {
                 System.out.println("Encerrando...");
                 break;
+            }
+
+            if (opcaoAlgoritmo < 0 || opcaoAlgoritmo > 4) {
+                System.out.println("Algoritmo inexistente. Escolha uma opção válida do menu.");
+                continue;
             }
 
             System.out.println("-------------------------------------------------------");
@@ -55,9 +73,18 @@ public class ExperimentRunner {
             System.out.println("0 - Voltar");
 
             System.out.print("Opção: ");
-            int opcaoDificuldade = scanner.nextInt();
+            Integer opcaoDificuldadeLida = lerOpcaoInteira(scanner);
+            if (opcaoDificuldadeLida == null) {
+                continue;
+            }
+            int opcaoDificuldade = opcaoDificuldadeLida;
 
             if (opcaoDificuldade == 0) {
+                continue;
+            }
+
+            if (opcaoDificuldade < 0 || opcaoDificuldade > 3) {
+                System.out.println("Dificuldade inválida. Escolha uma opção válida do menu.");
                 continue;
             }
 
