@@ -181,100 +181,7 @@ O projeto segue a estrutura padrão de projetos Java com Maven.
 │
 └───target
     │   sudoku-solver-taal-1.0.jar
-    │
-    ├───classes
-    │   ├───br
-    │   │   └───edu
-    │   │       └───sudoku
-    │   │           ├───experiment
-    │   │           │       ExperimentRunner.class
-    │   │           │
-    │   │           ├───heuristics
-    │   │           │       MRVHeuristic.class
-    │   │           │       VariableOrderingHeuristic.class
-    │   │           │
-    │   │           ├───io
-    │   │           │       SudokuReader.class
-    │   │           │       SudokuWriter.class
-    │   │           │
-    │   │           ├───metrics
-    │   │           │       Metrics.class
-    │   │           │
-    │   │           ├───model
-    │   │           │       SudokuBoard.class
-    │   │           │
-    │   │           ├───solver
-    │   │           │   │   SudokuSolver.class
-    │   │           │   │
-    │   │           │   ├───backtracking
-    │   │           │   │       BacktrackingAlgorithm.class
-    │   │           │   │       BacktrackingSolver.class
-    │   │           │   │
-    │   │           │   ├───branchandbound
-    │   │           │   │       BranchAndBoundAlgorithm.class
-    │   │           │   │       BranchAndBoundSolver.class
-    │   │           │   │
-    │   │           │   ├───dynamicprogramming
-    │   │           │   │       DynamicProgrammingAlgorithm.class
-    │   │           │   │       DynamicProgrammingSolver.class
-    │   │           │   │
-    │   │           │   └───greedy
-    │   │           │           GreedyAlgorithm.class
-    │   │           │           GreedySolver.class
-    │   │           │
-    │   │           └───utils
-    │   │                   SudokuValidator.class
-    │   │
-    │   └───sudokus
-    │           sudoku_dificil.txt
-    │           sudoku_facil.txt
-    │           sudoku_medio.txt
-    │
-    ├───generated-sources
-    │   └───annotations
-    ├───generated-test-sources
-    │   └───test-annotations
-    ├───maven-archiver
-    │       pom.properties
-    │
-    ├───maven-status
-    │   └───maven-compiler-plugin
-    │       ├───compile
-    │       │   └───default-compile
-    │       │           createdFiles.lst
-    │       │           inputFiles.lst
-    │       │
-    │       └───testCompile
-    │           └───default-testCompile
-    │                   createdFiles.lst
-    │                   inputFiles.lst
-    │
-    ├───surefire-reports
-    │       br.edu.sudoku.BacktrackingSolverTest.txt
-    │       br.edu.sudoku.BranchAndBoundSolverTest.txt
-    │       br.edu.sudoku.SolverComparisonTest.txt
-    │       br.edu.sudoku.SudokuValidatorTest.txt
-    │       TEST-br.edu.sudoku.BacktrackingSolverTest.xml
-    │       TEST-br.edu.sudoku.BranchAndBoundSolverTest.xml
-    │       TEST-br.edu.sudoku.SolverComparisonTest.xml
-    │       TEST-br.edu.sudoku.SudokuValidatorTest.xml
-    │
-    └───test-classes
-        ├───br
-        │   └───edu
-        │       └───sudoku
-        │           │   BacktrackingSolverTest.class
-        │           │   BranchAndBoundSolverTest.class
-        │           │   QuickPerformanceTest.class
-        │           │   SolverComparisonTest.class
-        │           │   SudokuValidatorTest.class
-        │           │
-        │           └───experiment
-        │                   PerformanceComparisonTest.class
-        │
-        └───sudokus
-                testSudoku.txt
-
+    ...
 ```
 
 ## Descrição dos Componentes
@@ -379,7 +286,9 @@ Os algoritmos são comparados utilizando as seguintes métricas:
 
 ## Executando os Testes
 
-Para executar os testes unitários:
+### Via linha de comando (Maven)
+
+Para executar todos os testes unitários:
 
 ```
 mvn test
@@ -396,6 +305,24 @@ Exemplo:
 ```
 mvn test -Dtest=BacktrackingSolverTest
 ```
+
+### Via IntelliJ IDEA
+
+#### Configuração inicial (faça isso uma vez)
+
+1. Abra o projeto no IntelliJ IDEA
+2. Acesse **View → Tool Windows → Maven** para abrir o painel do Maven
+3. Na árvore do Maven, expanda o projeto e vá até **Lifecycle**
+4. Execute **clean** e em seguida **install** para compilar e instalar todas as dependências
+
+Se não houver erros, o projeto estará pronto para ser executado.
+
+#### Executando o projeto e os testes
+
+Com o projeto compilado, qualquer classe pode ser executada diretamente pelo IntelliJ IDEA — seja uma classe principal do projeto ou uma classe de teste:
+
+- Clique no ícone de **Run** (▶) ao lado de qualquer classe ou método para executá-lo
+- Isso funciona tanto para rodar o projeto em si (ex: `ExperimentRunner`) quanto para executar testes individuais ou suítes completas
 
 ## Licença
 
