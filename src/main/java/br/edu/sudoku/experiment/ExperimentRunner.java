@@ -11,6 +11,8 @@ import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.solver.backtracking.BacktrackingSolver;
 import br.edu.sudoku.solver.branchandbound.BranchAndBoundSolver;
+import br.edu.sudoku.solver.dynamicprogramming.DynamicProgrammingSolver;
+import br.edu.sudoku.solver.greedy.GreedySolver;
 import br.edu.sudoku.solver.SudokuSolver;
 
 import java.util.Scanner;
@@ -140,12 +142,16 @@ public class ExperimentRunner {
                         break;
 
                     case 3:
-                        System.out.println("Algoritmo guloso ainda não implementado.");
-                        continue;
+                        solver = new GreedySolver();
+                        nomeAlgoritmoArquivo = "greedy";
+                        nomeAlgoritmo = "GREEDY";
+                        break;
 
                     case 4:
-                        System.out.println("Programação dinâmica ainda não implementada.");
-                        continue;
+                        solver = new DynamicProgrammingSolver();
+                        nomeAlgoritmoArquivo = "dynamicprogramming";
+                        nomeAlgoritmo = "DYNAMIC PROGRAMMING";
+                        break;
 
                     default:
                         System.out.println("Algoritmo inválido.");
