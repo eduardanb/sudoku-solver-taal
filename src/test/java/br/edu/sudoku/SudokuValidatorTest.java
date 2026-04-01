@@ -1,20 +1,20 @@
 package br.edu.sudoku;
 
-import br.edu.sudoku.model.SudokuBoard;
-import br.edu.sudoku.utils.SudokuValidator;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import br.edu.sudoku.model.SudokuBoard;
+import br.edu.sudoku.utils.SudokuValidator;
 
 public class SudokuValidatorTest {
 
 	@BeforeEach
 	public void imprimirDificuldade() {
-		String dificuldade = System.getProperty("difficulty", "medio"); // Defina aqui o nível de dificuldade a ser testado
-		String rotulo = "dificil".equalsIgnoreCase(dificuldade) ? "dificil" : dificuldade.toLowerCase();
-		System.out.println("Dificuldade de teste: (" + rotulo + ")");
+		String dificuldade = System.getProperty("difficulty", "medio");
+		System.out.println("Dificuldade de teste: (" + TestUtils.formatarRotulo(dificuldade) + ")");
 	}
 
 	@Test

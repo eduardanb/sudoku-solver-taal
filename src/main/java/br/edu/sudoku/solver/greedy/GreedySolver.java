@@ -9,154 +9,199 @@ import br.edu.sudoku.utils.SudokuValidator;
 public class GreedySolver implements GreedyAlgorithm {
 
     @Override
-    public boolean solve(SudokuBoard board, Metrics metrics) {
-        return greedySolve(board, metrics);
+    public boolean solve(SudokuBoard tabuleiro, Metrics metricas) {
+        return greedySolve(tabuleiro, metricas);
     }
 
     @Override
-    public boolean greedySolve(SudokuBoard board, Metrics metrics) {
-        return greedySearch(board, metrics);
+    public boolean greedySolve(SudokuBoard tabuleiro, Metrics metricas) {
+        return buscaGulosa(tabuleiro, metricas);
     }
 
-    private boolean greedySearch(SudokuBoard board, Metrics metrics) {
+    private boolean buscaGulosa(SudokuBoard tabuleiro, Metrics metricas) {
+        metricas.incrementVisitedNodes();
 
-        metrics.incrementVisitedNodes();
-
-        int[] cell = selectMostConstrainedCell(board);
-        if (cell == null) {
+        int[] celula = selecionarCelulaMaisRestrita(tabuleiro);
+        if (celula == null) {
+            // Nenhuma celula vazia: tabuleiro resolvido
             return true;
         }
 
-        int row = cell[0];
-        int col = cell[1];
-        int[] orderedCandidates = orderCandidatesByConstraint(board, row, col);
-        int candidateCount = orderedCandidates[0];
+        int linha  = celula[0];
+        int coluna = celula[1];
+        int[] candidatosOrdenados = ordenarCandidatosPorRestricao(tabuleiro, linha, coluna);
+        int numCandidatos = candidatosOrdenados[0];
 
-        if (candidateCount == 0) {
-            metrics.incrementBacktracks();
+        if (numCandidatos == 0) {
+            // Dominio vazio: estado inviavel — backtrack unico registrado aqui
+            metricas.incrementBacktracks();
             return false;
         }
 
-        for (int i = 1; i <= candidateCount; i++) {
-            int candidate = orderedCandidates[i];
-            board.set(row, col, candidate);
+        for (int i = 1; i <= numCandidatos; i++) {
+            int candidato = candidatosOrdenados[i];
+            tabuleiro.set(linha, coluna, candidato);
 
-            if (greedySearch(board, metrics)) {
+            if (buscaGulosa(tabuleiro, metricas)) {
                 return true;
             }
 
-            board.set(row, col, 0);
-            metrics.incrementBacktracks();
+            tabuleiro.set(linha, coluna, 0);
         }
 
+        // Nenhum candidato funcionou: registra um unico backtrack para esta celula
+        metricas.incrementBacktracks();
         return false;
     }
 
-    private int[] selectMostConstrainedCell(SudokuBoard board) {
+    /**
+     * Seleciona a celula vazia com menor dominio (MRV — Minimum Remaining Values).
+     * Se encontrar dominio 0, retorna imediatamente para falhar rapido.
+     *
+     * @return coordenadas [linha, coluna] da celula mais restrita, ou null se nao houver celulas vazias
+     */
+    private int[] selecionarCelulaMaisRestrita(SudokuBoard tabuleiro) {
+        int melhorLinha   = -1;
+        int melhorColuna  = -1;
+        int melhorDominio = Integer.MAX_VALUE;
 
-        int bestRow = -1;
-        int bestCol = -1;
-        int bestDomainSize = Integer.MAX_VALUE;
-
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (board.get(row, col) != 0) {
+        for (int linha = 0; linha < 9; linha++) {
+            for (int coluna = 0; coluna < 9; coluna++) {
+                if (tabuleiro.get(linha, coluna) != 0) {
                     continue;
                 }
 
-                int domainSize = countCandidates(board, row, col);
-                if (domainSize < bestDomainSize) {
-                    bestDomainSize = domainSize;
-                    bestRow = row;
-                    bestCol = col;
+                int dominio = contarCandidatos(tabuleiro, linha, coluna);
 
-                    if (bestDomainSize == 1) {
-                        return new int[]{bestRow, bestCol};
+                // Dominio vazio: celula sem candidatos, falha rapida
+                if (dominio == 0) {
+                    return new int[]{linha, coluna};
+                }
+
+                if (dominio < melhorDominio) {
+                    melhorDominio = dominio;
+                    melhorLinha   = linha;
+                    melhorColuna  = coluna;
+
+                    // Dominio 1 e o minimo viavel; nao precisa continuar varrendo
+                    if (melhorDominio == 1) {
+                        return new int[]{melhorLinha, melhorColuna};
                     }
                 }
             }
         }
 
-        if (bestRow == -1) {
+        if (melhorLinha == -1) {
             return null;
         }
 
-        return new int[]{bestRow, bestCol};
+        return new int[]{melhorLinha, melhorColuna};
     }
 
-    private int countCandidates(SudokuBoard board, int row, int col) {
-        int count = 0;
-        for (int value = 1; value <= 9; value++) {
-            if (SudokuValidator.isValid(board, row, col, value)) {
-                count++;
+    /**
+     * Conta quantos valores (1-9) sao validos para a celula (linha, coluna).
+     */
+    private int contarCandidatos(SudokuBoard tabuleiro, int linha, int coluna) {
+        int cont = 0;
+        for (int valor = 1; valor <= 9; valor++) {
+            if (SudokuValidator.isValid(tabuleiro, linha, coluna, valor)) {
+                cont++;
             }
         }
-        return count;
+        return cont;
     }
 
-    private int[] orderCandidatesByConstraint(SudokuBoard board, int row, int col) {
+    /**
+     * Ordena os candidatos validos para (linha, coluna) pelo menor custo de restricao
+     * (LCV — Least Constraining Value): prefere valores que menos restringem os vizinhos.
+     *
+     * @return array onde resultado[0] = quantidade de candidatos,
+     *         resultado[1..n] = candidatos ordenados do menos ao mais restritivo
+     */
+    private int[] ordenarCandidatosPorRestricao(SudokuBoard tabuleiro, int linha, int coluna) {
+        int[] valores = new int[9];
+        int[] custos  = new int[9];
+        int tamanho   = 0;
 
-        int[] values = new int[9];
-        int[] costs = new int[9];
-        int size = 0;
-
-        for (int value = 1; value <= 9; value++) {
-            if (!SudokuValidator.isValid(board, row, col, value)) {
+        for (int valor = 1; valor <= 9; valor++) {
+            if (!SudokuValidator.isValid(tabuleiro, linha, coluna, valor)) {
                 continue;
             }
 
-            board.set(row, col, value);
-            values[size] = value;
-            costs[size] = estimateConstraintCost(board, row, col);
-            board.set(row, col, 0);
-            size++;
+            tabuleiro.set(linha, coluna, valor);
+            valores[tamanho] = valor;
+            custos[tamanho]  = estimarCustoRestricao(tabuleiro, linha, coluna);
+            tabuleiro.set(linha, coluna, 0);
+            tamanho++;
         }
 
-        sortByCost(values, costs, size);
+        ordenarPorCusto(valores, custos, tamanho);
 
-        int[] result = new int[10];
-        result[0] = size;
-        for (int i = 0; i < size; i++) {
-            result[i + 1] = values[i];
+        int[] resultado = new int[10];
+        resultado[0] = tamanho;
+        for (int i = 0; i < tamanho; i++) {
+            resultado[i + 1] = valores[i];
         }
-        return result;
+        return resultado;
     }
 
-    private int estimateConstraintCost(SudokuBoard board, int row, int col) {
+    /**
+     * Estima o custo de restricao de um valor ja atribuido em (linha, coluna):
+     * soma os candidatos restantes nas celulas vazias da linha, coluna e subquadrado 3x3.
+     * Menor custo = valor menos restritivo para os vizinhos.
+     */
+    private int estimarCustoRestricao(SudokuBoard tabuleiro, int linha, int coluna) {
+        int custo = 0;
 
-        int cost = 0;
+        // Linha
         for (int c = 0; c < 9; c++) {
-            if (board.get(row, c) == 0) {
-                cost += countCandidates(board, row, c);
+            if (c != coluna && tabuleiro.get(linha, c) == 0) {
+                custo += contarCandidatos(tabuleiro, linha, c);
             }
         }
 
-        for (int r = 0; r < 9; r++) {
-            if (board.get(r, col) == 0) {
-                cost += countCandidates(board, r, col);
+        // Coluna
+        for (int l = 0; l < 9; l++) {
+            if (l != linha && tabuleiro.get(l, coluna) == 0) {
+                custo += contarCandidatos(tabuleiro, l, coluna);
             }
         }
 
-        return cost;
+        // Subquadrado 3x3
+        int inicioLinha  = (linha  / 3) * 3;
+        int inicioColuna = (coluna / 3) * 3;
+        for (int l = inicioLinha; l < inicioLinha + 3; l++) {
+            for (int c = inicioColuna; c < inicioColuna + 3; c++) {
+                if (l != linha && c != coluna && tabuleiro.get(l, c) == 0) {
+                    custo += contarCandidatos(tabuleiro, l, c);
+                }
+            }
+        }
+
+        return custo;
     }
 
-    private void sortByCost(int[] values, int[] costs, int size) {
-        for (int i = 0; i < size - 1; i++) {
-            int bestIndex = i;
-            for (int j = i + 1; j < size; j++) {
-                if (costs[j] < costs[bestIndex]) {
-                    bestIndex = j;
+    /**
+     * Ordena {@code valores} pelo respectivo {@code custos} em ordem crescente (selection sort).
+     * O tamanho real dos arrays e {@code tamanho}.
+     */
+    private void ordenarPorCusto(int[] valores, int[] custos, int tamanho) {
+        for (int i = 0; i < tamanho - 1; i++) {
+            int indiceMelhor = i;
+            for (int j = i + 1; j < tamanho; j++) {
+                if (custos[j] < custos[indiceMelhor]) {
+                    indiceMelhor = j;
                 }
             }
 
-            if (bestIndex != i) {
-                int tempCost = costs[i];
-                costs[i] = costs[bestIndex];
-                costs[bestIndex] = tempCost;
+            if (indiceMelhor != i) {
+                int tempCusto = custos[i];
+                custos[i] = custos[indiceMelhor];
+                custos[indiceMelhor] = tempCusto;
 
-                int tempValue = values[i];
-                values[i] = values[bestIndex];
-                values[bestIndex] = tempValue;
+                int tempValor = valores[i];
+                valores[i] = valores[indiceMelhor];
+                valores[indiceMelhor] = tempValor;
             }
         }
     }

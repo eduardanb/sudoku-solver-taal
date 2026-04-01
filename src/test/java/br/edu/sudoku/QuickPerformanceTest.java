@@ -2,39 +2,32 @@
 
 package br.edu.sudoku;
 
+import org.junit.jupiter.api.Test;
+
 import br.edu.sudoku.io.SudokuReader;
 import br.edu.sudoku.metrics.Metrics;
 import br.edu.sudoku.model.SudokuBoard;
 import br.edu.sudoku.solver.backtracking.BacktrackingSolver;
 import br.edu.sudoku.solver.branchandbound.BranchAndBoundSolver;
-import org.junit.jupiter.api.Test;
+import br.edu.sudoku.solver.dynamicprogramming.DynamicProgrammingSolver;
+import br.edu.sudoku.solver.greedy.GreedySolver;
 
 public class QuickPerformanceTest {
 
     @Test
     public void compararDesempenhoSolvers() throws Exception {
 
-        String dificuldade = "medio"; // Coloque aqui o nível de dificuldade que deseja testar.
-
-        String caminho;
-
-        if (dificuldade.equals("medio")) {
-            caminho = "sudokus/sudoku_medio.txt";
-        } else if (dificuldade.equals("dificil")) {
-            caminho = "sudokus/sudoku_dificil.txt";
-        } else {
-            caminho = "sudokus/sudoku_facil.txt";
-        }
+        String dificuldade = "medio"; // Altere aqui para testar outra dificuldade
+        String caminho = TestUtils.caminhoParaDificuldade(dificuldade);
+        String rotulo = TestUtils.formatarRotulo(dificuldade);
 
         System.setProperty("difficulty", dificuldade);
         System.setProperty("sudoku.difficulty", dificuldade);
 
-        SudokuBoard tabuleiro = SudokuReader.read(caminho);
-
         System.out.println("\n==============================");
-        System.out.println(" TESTE RÁPIDO DE DESEMPENHO ");
+        System.out.println(" TESTE RAPIDO DE DESEMPENHO ");
         System.out.println("==============================");
-        System.out.println("Sudoku: " + dificuldade);
+        System.out.println("Sudoku: " + rotulo);
         System.out.println();
 
         // -------- Backtracking --------
@@ -42,18 +35,13 @@ public class QuickPerformanceTest {
         Metrics metricasBt = new Metrics();
 
         long inicioBt = System.nanoTime();
-
-        BacktrackingSolver backtracking = new BacktrackingSolver(false);
-        backtracking.solve(tabuleiroBt, metricasBt);
-
-        long fimBt = System.nanoTime();
-
-        long tempoBt = (fimBt - inicioBt) / 1_000_000;
+        new BacktrackingSolver(false).solve(tabuleiroBt, metricasBt);
+        long tempoBt = (System.nanoTime() - inicioBt) / 1_000_000;
 
         System.out.println("Backtracking:");
-        System.out.println("Tempo (ms): " + tempoBt);
-        System.out.println("Nós visitados: " + metricasBt.getVisitedNodes());
-        System.out.println("Backtracks: " + metricasBt.getBacktracks());
+        System.out.println("  Tempo (ms):     " + tempoBt);
+        System.out.println("  Nos visitados:  " + metricasBt.getVisitedNodes());
+        System.out.println("  Backtracks:     " + metricasBt.getBacktracks());
         System.out.println();
 
         // -------- Branch and Bound --------
@@ -61,18 +49,41 @@ public class QuickPerformanceTest {
         Metrics metricasBb = new Metrics();
 
         long inicioBb = System.nanoTime();
-
-        BranchAndBoundSolver branchAndBound = new BranchAndBoundSolver(false);
-        branchAndBound.solve(tabuleiroBb, metricasBb);
-
-        long fimBb = System.nanoTime();
-
-        long tempoBb = (fimBb - inicioBb) / 1_000_000;
+        new BranchAndBoundSolver(false).solve(tabuleiroBb, metricasBb);
+        long tempoBb = (System.nanoTime() - inicioBb) / 1_000_000;
 
         System.out.println("Branch and Bound:");
-        System.out.println("Tempo (ms): " + tempoBb);
-        System.out.println("Nós visitados: " + metricasBb.getVisitedNodes());
-        System.out.println("Backtracks: " + metricasBb.getBacktracks());
+        System.out.println("  Tempo (ms):     " + tempoBb);
+        System.out.println("  Nos visitados:  " + metricasBb.getVisitedNodes());
+        System.out.println("  Backtracks:     " + metricasBb.getBacktracks());
+        System.out.println();
+
+        // -------- Greedy --------
+        SudokuBoard tabuleiroG = SudokuReader.read(caminho);
+        Metrics metricasG = new Metrics();
+
+        long inicioG = System.nanoTime();
+        new GreedySolver().solve(tabuleiroG, metricasG);
+        long tempoG = (System.nanoTime() - inicioG) / 1_000_000;
+
+        System.out.println("Greedy:");
+        System.out.println("  Tempo (ms):     " + tempoG);
+        System.out.println("  Nos visitados:  " + metricasG.getVisitedNodes());
+        System.out.println("  Backtracks:     " + metricasG.getBacktracks());
+        System.out.println();
+
+        // -------- Dynamic Programming --------
+        SudokuBoard tabuleiroDp = SudokuReader.read(caminho);
+        Metrics metricasDp = new Metrics();
+
+        long inicioDp = System.nanoTime();
+        new DynamicProgrammingSolver().solve(tabuleiroDp, metricasDp);
+        long tempoDp = (System.nanoTime() - inicioDp) / 1_000_000;
+
+        System.out.println("Dynamic Programming:");
+        System.out.println("  Tempo (ms):     " + tempoDp);
+        System.out.println("  Nos visitados:  " + metricasDp.getVisitedNodes());
+        System.out.println("  Backtracks:     " + metricasDp.getBacktracks());
         System.out.println();
 
         System.out.println("==============================\n");
