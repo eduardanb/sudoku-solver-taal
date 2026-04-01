@@ -14,7 +14,9 @@ As estratégias implementadas são:
 O sistema executa os algoritmos sobre instâncias de Sudoku fornecidas por arquivos de entrada e coleta métricas que permitem comparar formalmente o desempenho de cada abordagem.
 
 `LINK DO RELATÓRIO PT. 1:` https://docs.google.com/document/d/1i_WHgjf_wGwaYyXxn1F9tmtGn_zP-Su9bXPqPEhaLxo/edit?usp=sharing.
+
 `LINK DO RELATÓRIO PT. 2:` https://docs.google.com/document/d/18C4tPikuUdCBnJLe_4Jjyz_ubkZ7k7tqk6tiC9qzEdk/edit?usp=sharing.
+
 `LINK DO RELATÓRIO COMPARATIVO:` EM PROCESSO.
 
 (Acessar com email institucional.)
