@@ -23,7 +23,6 @@ public class GreedySolver implements GreedyAlgorithm {
 
         int[] celula = selecionarCelulaMaisRestrita(tabuleiro);
         if (celula == null) {
-            // Nenhuma celula vazia: tabuleiro resolvido
             return true;
         }
 
@@ -33,7 +32,6 @@ public class GreedySolver implements GreedyAlgorithm {
         int numCandidatos = candidatosOrdenados[0];
 
         if (numCandidatos == 0) {
-            // Dominio vazio: estado inviavel — backtrack unico registrado aqui
             metricas.incrementBacktracks();
             return false;
         }
@@ -49,7 +47,6 @@ public class GreedySolver implements GreedyAlgorithm {
             tabuleiro.set(linha, coluna, 0);
         }
 
-        // Nenhum candidato funcionou: registra um unico backtrack para esta celula
         metricas.incrementBacktracks();
         return false;
     }
@@ -83,7 +80,6 @@ public class GreedySolver implements GreedyAlgorithm {
                     melhorLinha   = linha;
                     melhorColuna  = coluna;
 
-                    // Dominio 1 e o minimo viavel; nao precisa continuar varrendo
                     if (melhorDominio == 1) {
                         return new int[]{melhorLinha, melhorColuna};
                     }
@@ -98,9 +94,6 @@ public class GreedySolver implements GreedyAlgorithm {
         return new int[]{melhorLinha, melhorColuna};
     }
 
-    /**
-     * Conta quantos valores (1-9) sao validos para a celula (linha, coluna).
-     */
     private int contarCandidatos(SudokuBoard tabuleiro, int linha, int coluna) {
         int cont = 0;
         for (int valor = 1; valor <= 9; valor++) {
@@ -145,29 +138,21 @@ public class GreedySolver implements GreedyAlgorithm {
         return resultado;
     }
 
-    /**
-     * Estima o custo de restricao de um valor ja atribuido em (linha, coluna):
-     * soma os candidatos restantes nas celulas vazias da linha, coluna e subquadrado 3x3.
-     * Menor custo = valor menos restritivo para os vizinhos.
-     */
     private int estimarCustoRestricao(SudokuBoard tabuleiro, int linha, int coluna) {
         int custo = 0;
 
-        // Linha
         for (int c = 0; c < 9; c++) {
             if (c != coluna && tabuleiro.get(linha, c) == 0) {
                 custo += contarCandidatos(tabuleiro, linha, c);
             }
         }
 
-        // Coluna
         for (int l = 0; l < 9; l++) {
             if (l != linha && tabuleiro.get(l, coluna) == 0) {
                 custo += contarCandidatos(tabuleiro, l, coluna);
             }
         }
 
-        // Subquadrado 3x3
         int inicioLinha  = (linha  / 3) * 3;
         int inicioColuna = (coluna / 3) * 3;
         for (int l = inicioLinha; l < inicioLinha + 3; l++) {

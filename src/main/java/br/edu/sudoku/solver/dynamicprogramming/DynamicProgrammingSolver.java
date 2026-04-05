@@ -18,8 +18,6 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
 
     @Override
     public boolean dynamicSolve(SudokuBoard tabuleiro, Metrics metricas) {
-        // estadosMortos local: sem estado compartilhado entre chamadas,
-        // evitando bugs em reutilizacao ou chamadas concorrentes do solver
         Set<String> estadosMortos = new HashSet<>();
         return resolverComMemo(tabuleiro, metricas, estadosMortos);
     }
@@ -29,15 +27,11 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
 
         int[] celula = selecionarCelulaMaisRestrita(tabuleiro);
         if (celula == null) {
-            // Nenhuma celula vazia restante: tabuleiro resolvido
             return true;
         }
 
-        // Serializa o estado atual ANTES de tentar novos valores,
-        // para identificar corretamente estados ja provados como sem solucao
         String chave = serializar(tabuleiro);
         if (estadosMortos.contains(chave)) {
-            // Este estado ja foi explorado e nao levou a solucao
             metricas.incrementBacktracks();
             return false;
         }
@@ -56,12 +50,9 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
                 return true;
             }
 
-            // Desfaz a atribuicao e continua tentando outros valores
             tabuleiro.set(linha, coluna, 0);
         }
 
-        // Nenhum valor funcionou para esta celula: marca o estado como morto
-        // e registra um unico backtrack (nao um por digito tentado)
         estadosMortos.add(chave);
         metricas.incrementBacktracks();
         return false;
@@ -86,9 +77,8 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
 
                 int dominio = contarCandidatos(tabuleiro, linha, coluna);
 
-                // Dominio vazio: celula sem nenhum valor valido (estado inviavel)
                 if (dominio == 0) {
-                    return new int[]{linha, coluna}; // sera tratada como falha no loop de valores
+                    return new int[]{linha, coluna};
                 }
 
                 if (dominio < melhorDominio) {
@@ -96,7 +86,6 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
                     melhorLinha   = linha;
                     melhorColuna  = coluna;
 
-                    // Otimizacao: dominio 1 e o minimo possivel viavel; nao precisa continuar
                     if (melhorDominio == 1) {
                         return new int[]{melhorLinha, melhorColuna};
                     }
@@ -105,16 +94,12 @@ public class DynamicProgrammingSolver implements DynamicProgrammingAlgorithm {
         }
 
         if (melhorLinha == -1) {
-            // Nenhuma celula vazia encontrada
             return null;
         }
 
         return new int[]{melhorLinha, melhorColuna};
     }
 
-    /**
-     * Conta quantos valores (1-9) sao validos para a celula (linha, coluna).
-     */
     private int contarCandidatos(SudokuBoard tabuleiro, int linha, int coluna) {
         int cont = 0;
         for (int valor = 1; valor <= 9; valor++) {

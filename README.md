@@ -17,7 +17,7 @@ O sistema executa os algoritmos sobre instâncias de Sudoku fornecidas por arqui
 
 `LINK DO RELATÓRIO PT. 2:` https://docs.google.com/document/d/18C4tPikuUdCBnJLe_4Jjyz_ubkZ7k7tqk6tiC9qzEdk/edit?usp=sharing.
 
-`LINK DO RELATÓRIO COMPARATIVO:` EM PROCESSO.
+`LINK DO RELATÓRIO COMPARATIVO:` https://docs.google.com/document/d/1yCBlBsGokCb6KENApNdBrtkCkrgJJ6IGd5syY4U-18g/edit?tab=t.0.
 
 (Acessar com email institucional.)
 
